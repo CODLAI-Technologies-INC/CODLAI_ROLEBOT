@@ -74,6 +74,8 @@ CE, ROSH, EMC
   - ESPAsyncWebServer
   - Firebase Arduino Client Library for ESP8266 and ESP32
   - ArduinoJson
+- **Offline Libraries:**
+  - `other_libraries.zip`: Contains all required library dependencies for offline installation.
 
 # Library Structure & Contributing / Kütüphane Yapısı ve Katkıda Bulunma
 This library follows a modular design pattern to ensure efficiency.
