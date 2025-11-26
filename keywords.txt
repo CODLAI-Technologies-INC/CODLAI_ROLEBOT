@@ -1,0 +1,53 @@
+#######################################
+# Syntax Coloring Map For CODLAI_ROLEBOT
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ROLEBOT	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+playIntro	KEYWORD2
+serialStart	KEYWORD2
+serialWrite	KEYWORD2
+button1Read	KEYWORD2
+ledWrite	KEYWORD2
+Relay1Write	KEYWORD2
+Relay2Write	KEYWORD2
+eepromWriteInt	KEYWORD2
+eepromReadInt	KEYWORD2
+wifiStartAndConnect	KEYWORD2
+wifiConnectionControl	KEYWORD2
+wifiGetMACAddress	KEYWORD2
+wifiGetIPAddress	KEYWORD2
+serverStart	KEYWORD2
+serverCreateLocalPage	KEYWORD2
+serverHandleDNS	KEYWORD2
+serverContinue	KEYWORD2
+initESPNow	KEYWORD2
+setWiFiChannel	KEYWORD2
+sendESPNow	KEYWORD2
+registerOnRecv	KEYWORD2
+sendEmail	KEYWORD2
+getWeather	KEYWORD2
+getWikipedia	KEYWORD2
+sendTelegram	KEYWORD2
+fbServerSetandStartWithUser	KEYWORD2
+fbServerSetInt	KEYWORD2
+fbServerSetFloat	KEYWORD2
+fbServerSetString	KEYWORD2
+fbServerSetDouble	KEYWORD2
+fbServerSetBool	KEYWORD2
+fbServerSetJSON	KEYWORD2
+fbServerGetInt	KEYWORD2
+fbServerGetFloat	KEYWORD2
+fbServerGetString	KEYWORD2
+fbServerGetDouble	KEYWORD2
+fbServerGetBool	KEYWORD2
+fbServerGetJSON	KEYWORD2
