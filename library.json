@@ -1,6 +1,6 @@
 {
   "name": "CODLAI_ROLEBOT",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Library for ROLEBOT, an ESP8266-based programmable device. Visit www.codlai.com for more information.",
   "keywords": [
     "robotics",
@@ -8,6 +8,7 @@
     "servo",
     "dcmotor",
     "control",
+    "ifttt",
     "CODLAI",
     "ROLEBOT"
   ],

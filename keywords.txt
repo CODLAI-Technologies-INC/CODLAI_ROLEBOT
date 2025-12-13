@@ -38,6 +38,7 @@ sendEmail	KEYWORD2
 getWeather	KEYWORD2
 getWikipedia	KEYWORD2
 sendTelegram	KEYWORD2
+triggerIFTTTEvent	KEYWORD2
 fbServerSetandStartWithUser	KEYWORD2
 fbServerSetInt	KEYWORD2
 fbServerSetFloat	KEYWORD2

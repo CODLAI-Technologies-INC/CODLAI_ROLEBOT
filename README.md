@@ -58,6 +58,10 @@ C++, MicroPython (Text and Block Based)
 - Open-source editor compatibility
 - Comprehensive documentation for IoT applications
 
+## Cloud Integrations / Bulut Entegrasyonları
+- `sendTelegram()` lets you push instant alerts to Telegram bots for safety or automation workflows.
+- `triggerIFTTTEvent()` connects ROLEBOT to IFTTT services (Google Sheets, Gmail, Discord, smart lights, etc.). Start with `examples/2-Advanced/ROLEBOT_IFTTT_Webhook_Example.ino` to log relay events in the cloud.
+
 ## Security:
 AES and SSL/TLS hardware accelerators
 
