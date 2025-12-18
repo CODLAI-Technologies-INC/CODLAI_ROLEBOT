@@ -3,7 +3,6 @@
  * Turkish: Telegram Bildirim Örneği
  */
 #define USE_TELEGRAM
-#define USE_WIFI
 #include "ROLEBOT.h"
 
 ROLEBOT rolebot;

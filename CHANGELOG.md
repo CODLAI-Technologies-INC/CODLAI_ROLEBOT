@@ -2,7 +2,11 @@
 
 # CODLAI ERA (New Models)
 
-## [1.1.1] - 2025-03-09
+## [1.1.3] - 2025-12-18
+### Added
+- Revived the ESP-NOW, email, Telegram, weather and Wikipedia advanced examples with bilingual guidance so their helper usage is aligned with the MINIBOT/IOTBOT libraries.
+
+## [1.1.2] - 2025-03-09
 ### Fixed
 - PlatformIO yeniden yayını için sürüm numarası artırıldı.
 

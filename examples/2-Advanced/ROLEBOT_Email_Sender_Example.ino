@@ -3,7 +3,6 @@
  * Turkish: E-posta Gönderici Örneği
  */
 #define USE_EMAIL
-#define USE_WIFI
 #include "ROLEBOT.h"
 
 ROLEBOT rolebot;

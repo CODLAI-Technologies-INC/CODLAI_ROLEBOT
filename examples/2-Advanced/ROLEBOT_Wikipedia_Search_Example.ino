@@ -3,7 +3,6 @@
  * Turkish: Wikipedia Arama Örneği
  */
 #define USE_WIKIPEDIA
-#define USE_WIFI
 #include "ROLEBOT.h"
 
 ROLEBOT rolebot;
@@ -20,8 +19,8 @@ void setup() {
   rolebot.wifiStartAndConnect(WIFI_SSID, WIFI_PASSWORD);
   
   if(rolebot.wifiConnectionControl()) {
-      Serial.println("Searching for 'Arduino'...");
-      String summary = rolebot.getWikipedia("Arduino", "en");
+      Serial.println("Searching for 'Robot'...");
+      String summary = rolebot.getWikipedia("Robot", "en");
       Serial.println("Summary:");
       Serial.println(summary);
   }

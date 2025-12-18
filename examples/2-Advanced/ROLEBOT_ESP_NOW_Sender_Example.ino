@@ -3,7 +3,6 @@
  * Turkish: ESP-NOW Gönderici Örneği
  */
 #define USE_ESPNOW
-#define USE_WIFI
 #include "ROLEBOT.h"
 
 ROLEBOT rolebot;

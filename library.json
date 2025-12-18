@@ -1,6 +1,6 @@
 {
   "name": "CODLAI_ROLEBOT",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "description": "Library for ROLEBOT, an ESP8266-based programmable device. Visit www.codlai.com for more information.",
   "keywords": [
     "robotics",
@@ -49,5 +49,9 @@
     "examples/main/ROLEBOT_basic_example"
   ],
   "homepage": "https://github.com/CODLAI-Technologies-INC/CODLAI_ROLEBOT",
-  "dependencies": {}
+  "dependencies": {
+    "ESPAsyncWebServer": "^1.2.3",
+    "ESPAsyncTCP": "^1.2.2",
+    "AsyncTCP": "^1.1.1"
+  }
 }
