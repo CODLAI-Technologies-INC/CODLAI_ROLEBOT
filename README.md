@@ -57,6 +57,9 @@ C++, MicroPython (Text and Block Based)
 - On-device information sections
 - Open-source editor compatibility
 - Comprehensive documentation for IoT applications
+- Persistent storage helpers (EEPROM): int16/int32/float/string/bytes via `eeprom*` functions
+- CRC-protected EEPROM records (versioned): `eepromWriteRecord/eepromReadRecord`
+- NTP time sync helpers: `ntpSync/ntpGetDateTimeString` (requires WiFi)
 
 ## Cloud Integrations / Bulut Entegrasyonları
 - `sendTelegram()` lets you push instant alerts to Telegram bots for safety or automation workflows.
