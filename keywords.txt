@@ -50,6 +50,8 @@ wifiStartAndConnect	KEYWORD2
 wifiConnectionControl	KEYWORD2
 wifiGetMACAddress	KEYWORD2
 wifiGetIPAddress	KEYWORD2
+otaBegin	KEYWORD2
+otaHandle	KEYWORD2
 serverStart	KEYWORD2
 serverCreateLocalPage	KEYWORD2
 serverHandleDNS	KEYWORD2

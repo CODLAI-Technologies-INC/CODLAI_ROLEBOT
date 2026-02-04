@@ -8,6 +8,11 @@
 - CRC-protected EEPROM record helpers: `eepromCrc32`, `eepromWriteRecord`, `eepromReadRecord`.
 - New advanced example: `ROLEBOT_NTP_Time_Advanced_Example.ino` (TR/EN).
 
+## [1.1.5] - 2026-02-04
+### Added
+- OTA helpers: `otaBegin`, `otaHandle` (requires `USE_OTA`).
+- New advanced example: `ROLEBOT_OTA_Update_Example.ino` (TR/EN).
+
 ## [1.1.4] - 2025-12-20
 ### Added
 - Extended EEPROM helpers: `eepromBegin/Commit/End`, byte/int32/uint32/float/string/bytes read-write and region clear.

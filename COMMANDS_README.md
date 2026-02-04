@@ -65,6 +65,7 @@
         *   **EN:** CRC-protected record read (validates magic/len/crc).
         *   **TR:** CRC korumalı record okuma (magic/len/crc kontrolü).
 *   **WiFi**: `wifiStartAndConnect`, `wifiConnectionControl`, `wifiGetIPAddress`, `wifiGetMACAddress`.
+*   **OTA (Over-The-Air)**: `otaBegin`, `otaHandle` (call after WiFi, keep `otaHandle()` in `loop()`).
 *   **NTP Time / Saat Senkron**: `ntpBegin` (recommended), `ntpSync` (advanced), `ntpIsTimeValid`, `ntpGetEpoch`, `ntpGetDateTimeString`.
 *   **ESP-NOW**: `initESPNow`, `setWiFiChannel`, `sendESPNow`, `registerOnRecv`, `startListening`.
 *   **Server / Sunucu**: `serverStart`, `serverCreateLocalPage`, `serverHandleDNS`, `serverContinue`.

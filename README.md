@@ -60,9 +60,7 @@ C++, MicroPython (Text and Block Based)
 - Persistent storage helpers (EEPROM): int16/int32/float/string/bytes via `eeprom*` functions
 - CRC-protected EEPROM records (versioned): `eepromWriteRecord/eepromReadRecord`
 - NTP time sync helpers: `ntpSync/ntpGetDateTimeString` (requires WiFi)
-
-## Cloud Integrations / Bulut Entegrasyonları
-- `sendTelegram()` lets you push instant alerts to Telegram bots for safety or automation workflows.
+- OTA firmware updates: `otaBegin/otaHandle` (requires WiFi)
 - `triggerIFTTTEvent()` connects ROLEBOT to IFTTT services (Google Sheets, Gmail, Discord, smart lights, etc.). Start with `examples/2-Advanced/ROLEBOT_IFTTT_Webhook_Example.ino` to log relay events in the cloud.
 
 ## Security:
