@@ -3,10 +3,16 @@
 # CODLAI ERA (New Models)
 
 ## [Unreleased]
+
+## [1.2.0] - 2026-09-25
 ### Added
 - NTP time helpers: `ntpSync`, `ntpIsTimeValid`, `ntpGetEpoch`, `ntpGetDateTimeString`.
 - CRC-protected EEPROM record helpers: `eepromCrc32`, `eepromWriteRecord`, `eepromReadRecord`.
 - New advanced example: `ROLEBOT_NTP_Time_Advanced_Example.ino` (TR/EN).
+- `examples/ROLEBOT_Musteri_Karsilama.cpp`'e Turkce/Ingilizce dil destegi eklendi: acilista B1 1.5sn basili tutulursa Ingilizce, birakilirsa (varsayilan) Turkce; secim LED yanip-sonmesiyle de teyit edilir.
+
+### Fixed
+- `library.json`'daki `dependencies` alani artik gercekte kullanilan kutuphaneleri gosteriyor (eski `ESPAsyncWebServer ^1.2.3` / `ESPAsyncTCP` / `AsyncTCP` uclusu yerine `mathieucarbou/ESPAsyncWebServer ^3.6.0` ve `bblanchon/ArduinoJson ^7.1.0`).
 
 ## [1.1.5] - 2026-02-04
 ### Added
