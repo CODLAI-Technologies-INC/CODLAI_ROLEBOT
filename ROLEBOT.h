@@ -82,12 +82,14 @@ extern "C" {
 #ifndef CODLAI_ESPNOW_MESSAGE_DEFINED
 #define CODLAI_ESPNOW_MESSAGE_DEFINED
 typedef struct {
-  uint8_t deviceType; // 1 = Armbot
+  uint8_t deviceType; // 1=Armbot, 2=Carbot, 10=IOTBOT LDR yayini, 11=IOTBOT sicaklik yayini, 20=basit metin mesaji, 21=basit sayi mesaji
   int axis1;
   int axis2;
   int axis3;
   int gripper;
   uint8_t action; // 0=None, 1=Horn, 2=Note
+  char text[32];  // espNowSendText: metin icerigi / espNowSendNumber: sayinin adi (name)
+  float value;    // espNowSendNumber: sayinin degeri (value)
 } CodlaiESPNowMessage;
 #endif
 
@@ -225,6 +227,16 @@ public:
           }
       });
   }
+
+  // --- Basit ESP-NOW mesajlasma (cocuklar/blok kod icin) ---
+  // Simple ESP-NOW messaging (for children / block-based code)
+  bool espNowBegin(int channel = 1);
+  void espNowSendText(const String &text);
+  void espNowSendNumber(const String &name, float value);
+  bool espNowAvailable();
+  String espNowReadText();
+  String espNowReadName();
+  float espNowReadNumber();
 #endif
 
   /*********************************** Email ***********************************
@@ -1463,6 +1475,74 @@ inline void ROLEBOT::sendESPNow(uint8_t *macAddr, uint8_t *data, int len)
 inline void ROLEBOT::registerOnRecv(esp_now_recv_cb_t cb)
 {
   esp_now_register_recv_cb(cb);
+}
+
+/*********************************** Basit ESP-NOW Mesajlasma ***********************************/
+inline bool ROLEBOT::espNowBegin(int channel)
+{
+  initESPNow();
+  setWiFiChannel(channel);
+  startListening();
+  return true;
+}
+
+inline void ROLEBOT::espNowSendText(const String &text)
+{
+  CodlaiESPNowMessage msg = {};
+  msg.deviceType = 20; // 20 = basit metin mesaji / simple text message
+  strncpy(msg.text, text.c_str(), sizeof(msg.text) - 1);
+  msg.text[sizeof(msg.text) - 1] = '\0';
+  uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  sendESPNow(broadcastAddress, (uint8_t *)&msg, sizeof(msg));
+}
+
+inline void ROLEBOT::espNowSendNumber(const String &name, float value)
+{
+  CodlaiESPNowMessage msg = {};
+  msg.deviceType = 21; // 21 = basit sayi mesaji / simple number message
+  strncpy(msg.text, name.c_str(), sizeof(msg.text) - 1);
+  msg.text[sizeof(msg.text) - 1] = '\0';
+  msg.value = value;
+  uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+  sendESPNow(broadcastAddress, (uint8_t *)&msg, sizeof(msg));
+}
+
+inline bool ROLEBOT::espNowAvailable()
+{
+  return newData && (receivedData.deviceType == 20 || receivedData.deviceType == 21);
+}
+
+inline String ROLEBOT::espNowReadText()
+{
+  String result = "";
+  if (newData && receivedData.deviceType == 20)
+  {
+    result = String(receivedData.text);
+    newData = false;
+  }
+  return result;
+}
+
+inline String ROLEBOT::espNowReadName()
+{
+  String result = "";
+  if (newData && receivedData.deviceType == 21)
+  {
+    result = String(receivedData.text);
+    newData = false;
+  }
+  return result;
+}
+
+inline float ROLEBOT::espNowReadNumber()
+{
+  float result = 0.0f;
+  if (newData && receivedData.deviceType == 21)
+  {
+    result = receivedData.value;
+    newData = false;
+  }
+  return result;
 }
 #endif
 

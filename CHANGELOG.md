@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-09-27
+### Added
+- **Basit ESP-NOW mesajlasma** (cocuklar/blok kod icin): `espNowBegin(channel=1)`, `espNowSendText(text)`, `espNowSendNumber(name, value)`, `espNowAvailable()`, `espNowReadText()`, `espNowReadName()`, `espNowReadNumber()`. `CodlaiESPNowMessage` yapisina `char text[32]` ve `float value` alanlari eklendi (Kol/Arac kontrolunu bozmadan) - ayni surumdeki tum CODLAI kartlari arasinda uyumlu.
+- Yeni ornek: `ROLEBOT_ESPNOW_Simple_Messaging_Example.ino`.
+
+### Not
+- Melodi (`buzzerPlayNote`/`buzzerPlayMelody`/`buzzerSetTempo`) ve NeoPixel (`moduleSmartLEDFill` vb.) ozellikleri ROLEBOT'a EKLENMEDI - ROLEBOT'ta onboard buzzer ya da NeoPixel donanimi/API'si hic yok (sadece 2 role + 1 buton + 1 LED). Bu ozellikler sadece IOTBOT ve MINIBOT'ta mevcut.
+
 ## [1.4.1] - 2026-09-27
 ### Fixed
 - `otaBegin()` icinde parola if/else zincirinden sonra fazladan bir `else { ArduinoOTA.setPassword("1234"); }` bloğu vardi - bu "else without a previous if" derleme hatasina yol acip `USE_OTA` tanimlayan HER sketch'in derlenmesini engelliyordu. Fazla blok kaldirildi. (Editor ajaninin derleme servisi testinde bulundu.)
