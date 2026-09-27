@@ -221,8 +221,14 @@ public:
   void startListening() {
       _instance = this;
       registerOnRecv([](uint8_t *mac, uint8_t *incomingData, uint8_t len) {
-          if (_instance && len == sizeof(CodlaiESPNowMessage)) {
-              memcpy(&_instance->receivedData, incomingData, sizeof(CodlaiESPNowMessage));
+          // Eski (daha kucuk) CodlaiESPNowMessage boyutundaki paketleri de
+          // kabul ediyoruz - bkz. IOTBOT.h/MINIBOT.h'deki ayni degisiklik.
+          // Also accept packets sized for an older (smaller)
+          // CodlaiESPNowMessage - see the same change in IOTBOT.h/MINIBOT.h.
+          if (_instance && len > 0) {
+              memset(&_instance->receivedData, 0, sizeof(_instance->receivedData));
+              size_t copyLen = (size_t)len < sizeof(_instance->receivedData) ? (size_t)len : sizeof(_instance->receivedData);
+              memcpy(&_instance->receivedData, incomingData, copyLen);
               _instance->newData = true;
           }
       });

@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-09-27
+### Changed
+- ESP-NOW alicisi (`startListening()`) artik eski (kutuphanenin onceki surumlerinde daha kucuk olan) `CodlaiESPNowMessage` boyutundaki paketleri de kabul ediyor - bkz. CODLAI_IOTBOT 1.7.1'deki ayni degisiklik.
+
 ## [1.5.0] - 2026-09-27
 ### Added
 - **Basit ESP-NOW mesajlasma** (cocuklar/blok kod icin): `espNowBegin(channel=1)`, `espNowSendText(text)`, `espNowSendNumber(name, value)`, `espNowAvailable()`, `espNowReadText()`, `espNowReadName()`, `espNowReadNumber()`. `CodlaiESPNowMessage` yapisina `char text[32]` ve `float value` alanlari eklendi (Kol/Arac kontrolunu bozmadan) - ayni surumdeki tum CODLAI kartlari arasinda uyumlu.
