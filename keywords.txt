@@ -54,6 +54,7 @@ otaBegin	KEYWORD2
 otaHandle	KEYWORD2
 serverStart	KEYWORD2
 serverCreateLocalPage	KEYWORD2
+serverOnRequest	KEYWORD2
 serverHandleDNS	KEYWORD2
 serverContinue	KEYWORD2
 initESPNow	KEYWORD2

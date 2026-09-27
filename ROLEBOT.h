@@ -23,6 +23,7 @@
 #endif
 #include <ESPAsyncWebServer.h>
 #include <DNSServer.h>
+#include <functional> // serverOnRequest icin std::function
 #endif
 
 #if defined(USE_FIREBASE)
@@ -46,15 +47,14 @@
 #include <ArduinoOTA.h>
 #endif
 
-#if defined(USE_WIFI)
-#include <ESP8266WiFi.h>
-#endif
-
 #if defined(USE_ESPNOW)
 #ifndef USE_WIFI
 #define USE_WIFI
 #endif
 #include <espnow.h>
+extern "C" {
+#include <user_interface.h> // wifi_set_channel() burada tanimli
+}
 #endif
 
 #if defined(USE_EMAIL)
@@ -67,6 +67,15 @@
 #if defined(USE_WEATHER) || defined(USE_WIKIPEDIA) || defined(USE_TELEGRAM) || defined(USE_IFTTT)
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecure.h>
+#endif
+
+// NOT: <ESP8266WiFi.h> include'u kasitli olarak EN SONA alindi - USE_OTA/
+// USE_ESPNOW/USE_EMAIL bayraklarinin HERHANGI biri USE_WIFI'yi KENDI
+// blogu icinde otomatik tanimliyor; bu satir onlardan ONCE olursa (ornegin
+// sadece USE_ESPNOW tanimliyken) USE_WIFI henuz tanimlanmamis olur ve
+// WiFi.h hic include edilmez. Bkz. IOTBOT.h/MINIBOT.h'deki ayni duzeltme.
+#if defined(USE_WIFI)
+#include <ESP8266WiFi.h>
 #endif
 
 // Structure to receive data via ESP-NOW
@@ -186,6 +195,10 @@ public:
 #if defined(USE_SERVER)
   void serverStart(const char *mode, const char *ssid, const char *password);
   void serverCreateLocalPage(const char *url, const char *WEBPageScript, const char *WEBPageCSS, const char *WEBPageHTML, size_t bufferSize = 4096);
+  // serverCreateLocalPage SADECE sabit/statik bir HTML sayfasi render eder;
+  // butona basildiginda gercekten bir rolyeyi tetiklemek icin bu fonksiyon
+  // kullanilir - bkz. IOTBOT.h'deki ayni fonksiyon.
+  void serverOnRequest(const char *url, std::function<String()> callback);
   void serverHandleDNS();
   void serverContinue();
 #endif
@@ -1158,6 +1171,15 @@ inline void ROLEBOT::serverCreateLocalPage(const char *url, const char *WEBPageS
   }
 }
 
+inline void ROLEBOT::serverOnRequest(const char *url, std::function<String()> callback)
+{
+  serverCODLAI.on(url, HTTP_GET, [callback](AsyncWebServerRequest *request)
+                  {
+                    String response = callback(); // Donanim burada tetiklenir (role vb.)
+                    request->send(200, "text/plain", response);
+                  });
+}
+
 inline void ROLEBOT::serverHandleDNS()
 {
   dnsServer.processNextRequest();
@@ -1391,13 +1413,27 @@ inline String ROLEBOT::fbServerGetJSON(const char *dataPath)
 #if defined(USE_ESPNOW)
 inline void ROLEBOT::initESPNow()
 {
-  WiFi.mode(WIFI_STA);
+  // Zaten AP ya da AP_STA modundaysa (ornegin ayni sketch'te bir web
+  // sunucusu/OTA icin softAP() calisiyorsa) bu AP'yi DUSURMEDEN STA'yi
+  // ekliyoruz. Kosulsuz WiFi.mode(WIFI_STA) AP'yi anlik olarak kapatirdi.
+  // If already in AP or AP_STA mode (e.g. a web server/OTA in the same
+  // sketch has called softAP()), add STA WITHOUT dropping that AP.
+  // Unconditionally calling WiFi.mode(WIFI_STA) would have silently
+  // dropped the AP.
+  WiFiMode_t currentMode = WiFi.getMode();
+  WiFi.mode((currentMode == WIFI_AP || currentMode == WIFI_AP_STA) ? WIFI_AP_STA : WIFI_STA);
   WiFi.disconnect();
   if (esp_now_init() != 0)
   {
     Serial.println("Error initializing ESP-NOW");
     return;
   }
+  // ESP8266'nin klasik espnow.h API'si, esp_now_send()/esp_now_add_peer()
+  // cagrilmadan ONCE bir "self role" belirlenmesini gerektirir; bu satir
+  // eksikti ve esp_now_send() sessizce basarisiz oluyordu (bkz. MINIBOT.h'de
+  // ayni hata gercek donanimda dogrulandi). COMBO, bu cihazin hem
+  // gonderici hem alici olarak calismasina izin verir.
+  esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
   Serial.println("ESP-NOW Initialized");
 }
 

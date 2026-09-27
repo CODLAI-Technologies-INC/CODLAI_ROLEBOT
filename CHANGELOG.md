@@ -4,6 +4,29 @@
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-09-27
+### Added
+- Yeni "3-Projects" ornek klasoru: ROLEBOT'un sensorsuz, sadece 2 role + 1 buton + 1 LED donanimini kullanan, kablosuz gerektirmeyen basit proje ornekleri.
+- `ROLEBOT_Double_Click_Two_Relay_Control_Example.ino` - tek butonla iki roleyi ayri ayri kontrol etme: tek tik Role 1'i, cift tik (400ms icinde) Role 2'yi degistirir.
+- `ROLEBOT_Smart_Plug_Auto_Off_Timer_Example.ino` - butona basinca Role 1 acilir ve geri sayim baslar, sure dolunca kendiliginden kapanir (unutkanlik icin akilli priz).
+- `ROLEBOT_EEPROM_Relay_Memory_Example.ino` - Role 1'in son durumu EEPROM'a yazilir; elektrik kesintisinden sonra kart yeniden basladiginda son durumu geri yukler.
+
+- Yeni ornek: `ROLEBOT_ESPNOW_Fan_Control_Reactive_Example.ino` - bir IOTBOT'un yayinladigi DHT sicaklik verisine gore roleyi (vantilator) otomatik acar/kapatir ("kablosuz otomatik vantilator").
+
+### Fixed
+- `initESPNow()` icinde kosulsuz `WiFi.mode(WIFI_STA)` cagrisi, ayni sketch'te onceden acilmis bir AP'yi (ornegin bir web sunucusu/OTA icin `softAP()`) sessizce dusuruyordu. Artik mevcut mod AP ya da AP_STA ise `WIFI_AP_STA`'ya geciliyor, AP kapatilmiyor.
+
+## [1.3.0] - 2026-09-26
+### Added
+- `serverOnRequest(url, callback)`: `serverCreateLocalPage` SADECE sabit/statik bir HTML sayfasi render eder; bu yeni fonksiyon bir adrese istek geldiginde GERCEKTEN kod calistirmaniza (bir rolyeyi tetiklemenize) izin verir.
+- Yeni ornek: `ROLEBOT_WiFi_Web_Control_Example.ino` - telefon/tarayicidan iki role ve LED kontrolu (AP modu, `serverOnRequest` kullanir).
+- Yeni baslangic seviyesi ornekler: `ROLEBOT_WiFi_Simple_Status_Example.ino` (MAC/sunucu gerekmeyen en basit WiFi baglanma ornegi), `ROLEBOT_ESPNOW_Broadcast_Simple_Example.ino` (MAC adresi bilmeden yayin/broadcast ile herhangi bir CODLAI kartina konusma) - egitim mufredati icin "once bunu dene" niteliginde.
+- Yeni ornek: `ROLEBOT_ESPNOW_NightLight_Reactive_Example.ino` - bir IOTBOT'un yayinladigi isik sensoru verisine gore roleyi (gercek bir lambayi) otomatik acar/kapatir ("kablosuz gece lambasi").
+
+### Fixed
+- **ESP-NOW gonderme hatasi**: `initESPNow()` icinde `esp_now_set_self_role()` hic cagrilmiyordu; ESP8266'nin klasik `espnow.h` API'si bu olmadan `esp_now_send()`'i sessizce basarisiz kiliyordu ("Error sending the data" - MINIBOT'ta ayni hata gercek donanimda dogrulandi, ROLEBOT ayni kod deseninden mustesna degildi). `ESP_NOW_ROLE_COMBO` ile duzeltildi.
+- `USE_ESPNOW` (tek basina, `USE_WIFI` olmadan) tanimlandiginda `WiFi.h`'in hic include edilmedigi bir sira sorunu duzeltildi - mevcut `ROLEBOT_ESP_NOW_Sender_Example.ino`/`Receiver_Example.ino` da bu hatadan etkileniyordu, artik derleniyor (bkz. CODLAI_IOTBOT v1.5.0'daki ayni duzeltme).
+
 ## [1.2.0] - 2026-09-25
 ### Added
 - NTP time helpers: `ntpSync`, `ntpIsTimeValid`, `ntpGetEpoch`, `ntpGetDateTimeString`.
