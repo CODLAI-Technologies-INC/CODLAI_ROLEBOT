@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-09-27
+### Fixed
+- `otaBegin()` icinde parola if/else zincirinden sonra fazladan bir `else { ArduinoOTA.setPassword("1234"); }` bloğu vardi - bu "else without a previous if" derleme hatasina yol acip `USE_OTA` tanimlayan HER sketch'in derlenmesini engelliyordu. Fazla blok kaldirildi. (Editor ajaninin derleme servisi testinde bulundu.)
+
 ## [1.4.0] - 2026-09-27
 ### Added
 - Yeni "3-Projects" ornek klasoru: ROLEBOT'un sensorsuz, sadece 2 role + 1 buton + 1 LED donanimini kullanan, kablosuz gerektirmeyen basit proje ornekleri.
