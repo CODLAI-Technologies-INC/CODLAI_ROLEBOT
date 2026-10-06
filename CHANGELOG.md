@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+## [1.5.3] - 2026-09-29
+### Fixed
+- CodlaiESPNowMessage aciklamasi: deviceType 22-29 editor.codlai.com ozel/eslesmeli mesajlasma bloklarina rezerve edildi (22 ozel metin, 23 ozel sayi, 24 eslesme teklifi, 25 eslesme kabulu; 26-29 bos). Kutuphane davranisi degismedi - `espNowAvailable()` hala yalniz 20/21'i gorur.
+- Ornekler: `ROLEBOT_Telegram_Notification_Example.ino` ve `ROLEBOT_IFTTT_Webhook_Example.ino` butonu ters okuyup buton basili DEGILKEN surekli mesaj/tetikleme gonderiyordu; duzeltildi.
+- CodlaiESPNowMessage aciklamasi: deviceType 3/4 eklendi, 30-39 "CODLAI Robotlari Otonom" projesine rezerve edildi.
+- Depoda eski bir PlatformIO kurulum kaydi (`.piopm`, surum 1.6.4) izleniyordu ve GitHub'a da gidiyordu; kutuphaneyi GitHub'dan ya da yerel klasorden (symlink) kuran projelerde bagimlilik agaci yanlis surum gosteriyordu. Dosya kaldirildi ve `.gitignore`'a eklendi. (Duvar projesi oturumunun bulgusu.)
+- `sendESPNow()`: peer SABIT kanal 1'e kaydediliyordu; artik o anki WiFi kanali (`wifi_get_channel()`) kullaniliyor. Ayrica basarili her gonderimde basilan "Sent with success" satiri kaldirildi (sadece hata yaziliyor) - bkz. CODLAI_MINIBOT 1.5.3.
+- `espNowReadName()` / `espNowReadNumber()`: ilk cagrilan fonksiyon mesaji tuketip digerinin 0/"" dondurmesine yol aciyordu - bkz. CODLAI_IOTBOT 1.7.3. Bu yuzden `ROLEBOT_ESPNOW_Simple_Messaging_Example.ino` gelen sayiyi hep 0 okuyordu; artik dogru calisiyor.
+
+### Added
+- **Blok dostu internet saati** (editor bloklari icin): `ntpUpdate()` (son ayarlarla hemen yeniden esitle), `ntpGetHour/Minute/Second/Day/Month/Year()`, `ntpGetWeekday()` (1=Pazartesi...7=Pazar), `ntpGetTimeString()` ("14:05:09"), `ntpGetDateString()` ("29.09.2026"), `ntpTimeIs(saat, dakika)` (o dakika boyunca true), `ntpTimeReached(saat, dakika)` (o dakikaya girince SADECE BIR KEZ true), `ntpTimeIsBetween(s1, d1, s2, d2)` (gece yarisini asan araliklar dahil). Saat gecerli degilse sayilar -1, metinler "--" doner; kosul fonksiyonlari false doner. Yeni ornek: `ROLEBOT_Internet_Clock_Relay_Example.ino`.
+- Yeni proje ornegi: `ROLEBOT_NTP_Scheduled_Relay_Example.ino` (internet saatiyle haftalik role programi, elle gecici mudahale).
+- Yeni kablosuz ornekler: `ROLEBOT_ESPNOW_Earthquake_Alert_Receiver_Example.ino`, `ROLEBOT_ESPNOW_Remote_Relay_Receiver_Example.ino` (IOTBOT gondericileriyle birlikte).
+
+## [1.5.2] - 2026-09-28
+### Fixed
+- `getWeather()`/`getWikipedia()`: `JsonDocument` yerine v6/v7 ile de calisan `DynamicJsonDocument` kullaniliyor; `containsKey()` (ArduinoJson v7'de kaldirildi) yerine `!doc["extract"].isNull()` kullaniliyor. Bu, `USE_SERVER`+`USE_WEATHER` birlikte tanimlandiginda alinan "'JsonDocument'/'deserializeJson' was not declared" hatasinin kok nedeniydi. Bkz. CODLAI_IOTBOT 1.7.2'deki ayni degisiklik.
+- `library.json`: eksik olan Firebase bagimliligi `dependencies` alanina eklendi.
+
 ## [1.5.1] - 2026-09-27
 ### Changed
 - ESP-NOW alicisi (`startListening()`) artik eski (kutuphanenin onceki surumlerinde daha kucuk olan) `CodlaiESPNowMessage` boyutundaki paketleri de kabul ediyor - bkz. CODLAI_IOTBOT 1.7.1'deki ayni degisiklik.

@@ -25,7 +25,7 @@ void setup() {
 }
 
 void loop() {
-  if(rolebot.button1Read()) { // Assuming button1 is available
+  if(!rolebot.button1Read()) { // button1Read() basiliyken LOW (false) / LOW (false) while pressed
       Serial.println("Button Pressed! Sending Telegram message...");
       rolebot.sendTelegram(BOT_TOKEN, CHAT_ID, "ROLEBOT: Button Pressed!");
       delay(5000); // Debounce

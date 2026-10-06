@@ -82,7 +82,7 @@ extern "C" {
 #ifndef CODLAI_ESPNOW_MESSAGE_DEFINED
 #define CODLAI_ESPNOW_MESSAGE_DEFINED
 typedef struct {
-  uint8_t deviceType; // 1=Armbot, 2=Carbot, 10=IOTBOT LDR yayini, 11=IOTBOT sicaklik yayini, 20=basit metin mesaji, 21=basit sayi mesaji
+  uint8_t deviceType; // 1=Armbot komutu, 2=Carbot komutu, 3=Carbot telemetrisi (axis3=mesafe cm, -1=bilinmiyor), 4=Armbot sinyali, 10=IOTBOT LDR yayini, 11=IOTBOT sicaklik yayini, 20=basit metin mesaji, 21=basit sayi mesaji, 22-29=REZERVE: editor.codlai.com ozel/eslesmeli mesajlasma bloklari (22 ozel metin, 23 ozel sayi, 24 eslesme teklifi, 25 eslesme kabulu; axis1=grup, axis2/axis3=hedef MAC, her zaman yayinla gonderilir, suzgec alicida), 30-39=REZERVE: CODLAI Robotlari Otonom projesi (30 eslesme teklifi, 31 eslesme kabul, 32 mod, 33 durum)
   int axis1;
   int axis2;
   int axis3;
@@ -191,6 +191,24 @@ public:
   bool ntpIsTimeValid(time_t minEpoch = 1609459200);
   time_t ntpGetEpoch();
   String ntpGetDateTimeString();
+  // --- Blok dostu internet saati / Block-friendly internet time ---
+  // TR: ntpBegin(3) ile baslat (Turkiye UTC+3; once WiFi'ye baglanin). Saat
+  // gecerli degilse okuma fonksiyonlari -1 (metinler "--") dondurur.
+  // EN: start with ntpBegin(3) (Turkey UTC+3; connect to WiFi first). While the
+  // time is not valid, the getters return -1 (strings return "--").
+  bool ntpUpdate();                  // Saati SIMDI yeniden cek (son ayarlarla) / re-sync NOW (last settings)
+  int ntpGetHour();                  // 0-23
+  int ntpGetMinute();                // 0-59
+  int ntpGetSecond();                // 0-59
+  int ntpGetDay();                   // 1-31
+  int ntpGetMonth();                 // 1-12
+  int ntpGetYear();                  // ornek / e.g. 2026
+  int ntpGetWeekday();               // 1=Pazartesi/Monday ... 7=Pazar/Sunday
+  String ntpGetTimeString();         // "14:05:09"
+  String ntpGetDateString();         // "29.09.2026"
+  bool ntpTimeIs(int hour, int minute);      // O dakika boyunca true / true during that whole minute
+  bool ntpTimeReached(int hour, int minute); // O dakikaya girince SADECE BIR KEZ true / true only ONCE when that minute starts
+  bool ntpTimeIsBetween(int startHour, int startMinute, int endHour, int endMinute); // [baslangic, bitis) gece yarisini asabilir / [start, end) may cross midnight
 
   /*********************************** Server  ***********************************
    */
@@ -301,6 +319,16 @@ public:
 private:
   static constexpr uint16_t _EEPROM_RECORD_MAGIC = 0xCD1A;
   static constexpr time_t _NTP_VALID_EPOCH = 1609459200; // 2021-01-01
+  // ntpUpdate() icin son NTP ayarlari / last NTP settings for ntpUpdate()
+  String _ntpServer = "pool.ntp.org";
+  long _ntpGmtOffsetSec = 0;
+  int _ntpDaylightOffsetSec = 0;
+  // ntpTimeReached() icin: her saat:dakika icin en son tetiklendigi dakika damgasi
+  // / for ntpTimeReached(): last minute stamp each hour:minute fired at
+  struct _NtpReachedSlot { int16_t key; int32_t stamp; };
+  _NtpReachedSlot _ntpReached[8] = {};
+  uint8_t _ntpReachedCount = 0;
+  bool _ntpLocalTime(struct tm &out);
 
   bool _eepromReady = false;
   size_t _eepromSize = 0;
@@ -919,7 +947,13 @@ inline bool ROLEBOT::ntpSync(const char *ntpServer, long gmtOffsetSec, int dayli
     ntpServer = "pool.ntp.org";
   }
 
-  configTime(gmtOffsetSec, daylightOffsetSec, ntpServer);
+  // ntpUpdate() ayni ayarlarla tekrar cagirabilsin diye sakla.
+  // / Remember the settings so ntpUpdate() can call again with them.
+  _ntpServer = ntpServer;
+  _ntpGmtOffsetSec = gmtOffsetSec;
+  _ntpDaylightOffsetSec = daylightOffsetSec;
+
+  configTime(gmtOffsetSec, daylightOffsetSec, _ntpServer.c_str());
 
   const uint32_t startMs = millis();
   while ((millis() - startMs) < timeoutMs)
@@ -976,6 +1010,161 @@ inline String ROLEBOT::ntpGetDateTimeString()
            tmInfo.tm_min,
            tmInfo.tm_sec);
   return String(buf);
+}
+
+/*********************************** NTP - Blok dostu saat / Block-friendly time ***********************************
+ * TR: ESP cekirdegi saati arka planda zaten periyodik olarak (varsayilan ~1 saat) yeniden
+ * esitler; ntpUpdate() bunu hemen yapmak icindir.
+ * EN: The ESP core already re-syncs the clock periodically in the background (default
+ * ~1 hour); ntpUpdate() does it right now.
+ */
+inline bool ROLEBOT::_ntpLocalTime(struct tm &out)
+{
+  time_t now = time(nullptr);
+  if (now < _NTP_VALID_EPOCH)
+  {
+    return false;
+  }
+  localtime_r(&now, &out);
+  return true;
+}
+
+inline bool ROLEBOT::ntpUpdate()
+{
+  return ntpSync(_ntpServer.c_str(), _ntpGmtOffsetSec, _ntpDaylightOffsetSec, 10000);
+}
+
+inline int ROLEBOT::ntpGetHour()
+{
+  struct tm t;
+  return _ntpLocalTime(t) ? t.tm_hour : -1;
+}
+
+inline int ROLEBOT::ntpGetMinute()
+{
+  struct tm t;
+  return _ntpLocalTime(t) ? t.tm_min : -1;
+}
+
+inline int ROLEBOT::ntpGetSecond()
+{
+  struct tm t;
+  return _ntpLocalTime(t) ? t.tm_sec : -1;
+}
+
+inline int ROLEBOT::ntpGetDay()
+{
+  struct tm t;
+  return _ntpLocalTime(t) ? t.tm_mday : -1;
+}
+
+inline int ROLEBOT::ntpGetMonth()
+{
+  struct tm t;
+  return _ntpLocalTime(t) ? t.tm_mon + 1 : -1;
+}
+
+inline int ROLEBOT::ntpGetYear()
+{
+  struct tm t;
+  return _ntpLocalTime(t) ? t.tm_year + 1900 : -1;
+}
+
+inline int ROLEBOT::ntpGetWeekday()
+{
+  struct tm t;
+  if (!_ntpLocalTime(t))
+  {
+    return -1;
+  }
+  // tm_wday: 0=Pazar ... 6=Cumartesi -> 1=Pazartesi ... 7=Pazar
+  // / tm_wday: 0=Sunday ... 6=Saturday -> 1=Monday ... 7=Sunday
+  return (t.tm_wday == 0) ? 7 : t.tm_wday;
+}
+
+inline String ROLEBOT::ntpGetTimeString()
+{
+  struct tm t;
+  if (!_ntpLocalTime(t))
+  {
+    return String("--:--:--");
+  }
+  char buf[12];
+  snprintf(buf, sizeof(buf), "%02d:%02d:%02d", t.tm_hour, t.tm_min, t.tm_sec);
+  return String(buf);
+}
+
+inline String ROLEBOT::ntpGetDateString()
+{
+  struct tm t;
+  if (!_ntpLocalTime(t))
+  {
+    return String("--.--.----");
+  }
+  char buf[16];
+  snprintf(buf, sizeof(buf), "%02d.%02d.%04d", t.tm_mday, t.tm_mon + 1, t.tm_year + 1900);
+  return String(buf);
+}
+
+inline bool ROLEBOT::ntpTimeIs(int hour, int minute)
+{
+  struct tm t;
+  return _ntpLocalTime(t) && t.tm_hour == hour && t.tm_min == minute;
+}
+
+inline bool ROLEBOT::ntpTimeReached(int hour, int minute)
+{
+  struct tm t;
+  if (!_ntpLocalTime(t) || t.tm_hour != hour || t.tm_min != minute)
+  {
+    return false;
+  }
+
+  // Bu dakikayi benzersiz tanimlayan damga (yil + yilin gunu + dakika).
+  // / A stamp that uniquely identifies this minute (year + day of year + minute).
+  const int32_t stamp = ((int32_t)(t.tm_year % 100) * 366 + t.tm_yday) * 1440 + hour * 60 + minute;
+  const int16_t key = (int16_t)(hour * 60 + minute);
+
+  for (uint8_t i = 0; i < _ntpReachedCount; i++)
+  {
+    if (_ntpReached[i].key == key)
+    {
+      if (_ntpReached[i].stamp == stamp)
+      {
+        return false; // Bu dakikada zaten tetiklendi / already fired in this minute
+      }
+      _ntpReached[i].stamp = stamp;
+      return true;
+    }
+  }
+
+  // Yeni saat:dakika - bos yuvaya yaz (8 dolarsa en eskisinin yerine).
+  // / New hour:minute - use a free slot (reuse the first one if all 8 are taken).
+  uint8_t slot = (_ntpReachedCount < 8) ? _ntpReachedCount++ : 0;
+  _ntpReached[slot].key = key;
+  _ntpReached[slot].stamp = stamp;
+  return true;
+}
+
+inline bool ROLEBOT::ntpTimeIsBetween(int startHour, int startMinute, int endHour, int endMinute)
+{
+  struct tm t;
+  if (!_ntpLocalTime(t))
+  {
+    return false;
+  }
+  const int now = t.tm_hour * 60 + t.tm_min;
+  const int start = startHour * 60 + startMinute;
+  const int end = endHour * 60 + endMinute;
+  if (start == end)
+  {
+    return false;
+  }
+  if (start < end)
+  {
+    return now >= start && now < end;
+  }
+  return now >= start || now < end; // Gece yarisini asan aralik (22:00-06:00) / range crossing midnight
 }
 
 /*********************************** WiFi ***********************************/
@@ -1460,19 +1649,23 @@ inline void ROLEBOT::sendESPNow(uint8_t *macAddr, uint8_t *data, int len)
 {
   if (!esp_now_is_peer_exist(macAddr))
   {
-    if (esp_now_add_peer(macAddr, ESP_NOW_ROLE_SLAVE, 1, NULL, 0) != 0)
+    // Peer'i SABIT kanal 1 yerine o anki WiFi kanalina kaydet: setWiFiChannel(6)
+    // kullanan projelerde peer yanlis kanalda kaliyordu.
+    // / Register the peer on the CURRENT WiFi channel instead of a fixed 1:
+    // projects using setWiFiChannel(6) ended up with the peer on the wrong channel.
+    if (esp_now_add_peer(macAddr, ESP_NOW_ROLE_SLAVE, wifi_get_channel(), NULL, 0) != 0)
     {
       Serial.println("Failed to add peer");
       return;
     }
   }
 
+  // Basarili gonderimde seri porta YAZMIYORUZ: yogun ESP-NOW trafiginde her
+  // pakette satir basmak seri portu bogup loop()'u yavaslatiyordu. Sadece hata.
+  // / Do NOT print on success: printing a line per packet flooded the serial
+  // port and slowed loop() under heavy ESP-NOW traffic. Errors only.
   int result = esp_now_send(macAddr, data, len);
-  if (result == 0)
-  {
-    Serial.println("Sent with success");
-  }
-  else
+  if (result != 0)
   {
     Serial.println("Error sending the data");
   }
@@ -1532,7 +1725,14 @@ inline String ROLEBOT::espNowReadText()
 inline String ROLEBOT::espNowReadName()
 {
   String result = "";
-  if (newData && receivedData.deviceType == 21)
+  // newData'ya bakmadan son SAYI mesajini dondur: boylece espNowReadName()
+  // ve espNowReadNumber() hangi sirayla cagrilirsa cagrilsin ikisi de dogru
+  // degeri verir (eskiden ilki mesaji tuketip digerine 0/"" dondururdu).
+  // / Return the last NUMBER message regardless of newData, so
+  // espNowReadName() and espNowReadNumber() both give the right value in
+  // any order (the first call used to consume the message and make the
+  // other one return 0/"").
+  if (receivedData.deviceType == 21)
   {
     result = String(receivedData.text);
     newData = false;
@@ -1543,7 +1743,14 @@ inline String ROLEBOT::espNowReadName()
 inline float ROLEBOT::espNowReadNumber()
 {
   float result = 0.0f;
-  if (newData && receivedData.deviceType == 21)
+  // newData'ya bakmadan son SAYI mesajini dondur: boylece espNowReadName()
+  // ve espNowReadNumber() hangi sirayla cagrilirsa cagrilsin ikisi de dogru
+  // degeri verir (eskiden ilki mesaji tuketip digerine 0/"" dondururdu).
+  // / Return the last NUMBER message regardless of newData, so
+  // espNowReadName() and espNowReadNumber() both give the right value in
+  // any order (the first call used to consume the message and make the
+  // other one return 0/"").
+  if (receivedData.deviceType == 21)
   {
     result = receivedData.value;
     newData = false;
@@ -1642,7 +1849,7 @@ inline String ROLEBOT::getWeather(String city, String apiKey)
       if (httpCode > 0)
       {
         String payload = http.getString();
-        JsonDocument doc; 
+        DynamicJsonDocument doc(1024); // ArduinoJson v6 VE v7 ile uyumlu (JsonDocument sadece v7'de var) / compatible with BOTH ArduinoJson v6 and v7 (JsonDocument only exists in v7)
         deserializeJson(doc, payload);
         float temp = doc["main"]["temp"];
         String weather = doc["weather"][0]["description"];
@@ -1688,10 +1895,13 @@ inline String ROLEBOT::getWikipedia(String query, String lang)
   if (httpCode > 0)
   {
     String payload = http.getString();
-    JsonDocument doc; 
+    DynamicJsonDocument doc(2048); // ArduinoJson v6 VE v7 ile uyumlu / compatible with BOTH ArduinoJson v6 and v7
     deserializeJson(doc, payload);
-    
-    if (doc.containsKey("extract")) {
+
+    // containsKey() ArduinoJson v7'de kaldirildi, v6/v7 ile calisan isNull()
+    // kullaniliyor. / containsKey() was removed in ArduinoJson v7, using an
+    // isNull() check that works on both v6 and v7.
+    if (!doc["extract"].isNull()) {
         String extract = doc["extract"].as<String>();
         http.end();
         return extract;

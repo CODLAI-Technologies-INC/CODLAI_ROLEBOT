@@ -1,6 +1,6 @@
 {
   "name": "CODLAI_ROLEBOT",
-  "version": "1.5.1",
+  "version": "1.5.3",
   "description": "Library for ROLEBOT, an ESP8266-based programmable device. Visit www.codlai.com for more information.",
   "keywords": [
     "robotics",
@@ -51,6 +51,7 @@
   "homepage": "https://github.com/CODLAI-Technologies-INC/CODLAI_ROLEBOT",
   "dependencies": {
     "mathieucarbou/ESPAsyncWebServer": "^3.6.0",
+    "mobizt/Firebase Arduino Client Library for ESP8266 and ESP32": "^4.4.14",
     "bblanchon/ArduinoJson": "^7.1.0"
   }
 }

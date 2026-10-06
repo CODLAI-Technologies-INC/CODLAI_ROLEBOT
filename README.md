@@ -9,7 +9,16 @@ This library is specially designed and produced by the CODLAI developer team to 
 1. Open the Arduino IDE.
 2. Go to "Sketch" -> "Include Library" -> "Manage Libraries..." from the menu bar.
 3. Type "ROLEBOT" in the search box.
-4. Find the ROLEBOT library and click the "Install" button to complete the installation.
+4. Find the ROLEBOT library and click the "Install" button to complete the installation.
+
+## Using with PlatformIO
+
+```ini
+lib_deps = samed5497kaya/CODLAI_ROLEBOT
+; Firebase / e-mail (USE_FIREBASE, USE_EMAIL) not used? Skip these two big
+; libraries: faster builds and no "path too long" (260 char) errors on Windows.
+lib_ignore = Firebase Arduino Client Library for ESP8266 and ESP32, ESP Mail Client
+```
 
 # ROLEBOT Kütüphanesi Kullanım Kılavuzu
 Bu kütüphane CODLAI geliştirici ekibi tarafından ROLEBOT ürününü kontrol etmek için özel olarak tasarlanmış ve üretilmiştir.
@@ -22,7 +31,17 @@ Bu kütüphane CODLAI geliştirici ekibi tarafından ROLEBOT ürününü kontrol
 1. Arduino IDE'yi açın.
 2. Menu çubuğundan "Sketch" -> "Include Library" -> "Manage Libraries..." seçeneğine gidin.
 3. Arama kutusuna "ROLEBOT" yazın.
-4. ROLEBOT kütüphanesini bulun ve "Install" düğmesine tıklayarak kurulumu tamamlayın.
+4. ROLEBOT kütüphanesini bulun ve "Install" düğmesine tıklayarak kurulumu tamamlayın.
+
+## PlatformIO ile Kullanım
+
+```ini
+lib_deps = samed5497kaya/CODLAI_ROLEBOT
+; Firebase / e-posta (USE_FIREBASE, USE_EMAIL) kullanmiyorsaniz bu iki buyuk
+; kutuphaneyi atlayin: derleme hizlanir, Windows'ta "yol cok uzun" (260
+; karakter) hatasi olmaz.
+lib_ignore = Firebase Arduino Client Library for ESP8266 and ESP32, ESP Mail Client
+```
 
 # About ROLEBOT / ROLEBOT Hakkında
 ROLEBOT is a development board that includes two programmable relays, buttons, and LED lights. It provides power through a Type-C port and allows programming in C++ & MicroPython via the CODLAI editor. With its built-in Wi-Fi connection, it enables internet-based applications and can be used either in remote control mode or as a local network.
