@@ -9,7 +9,7 @@ This library is specially designed and produced by the CODLAI developer team to 
 1. Open the Arduino IDE.
 2. Go to "Sketch" -> "Include Library" -> "Manage Libraries..." from the menu bar.
 3. Type "ROLEBOT" in the search box.
-4. Find the ROLEBOT library and click the "Install" button to complete the installation.
+4. Find the ROLEBOT library and click the "Install" button to complete the installation.
 
 ## Using with PlatformIO
 
@@ -31,7 +31,7 @@ Bu kütüphane CODLAI geliştirici ekibi tarafından ROLEBOT ürününü kontrol
 1. Arduino IDE'yi açın.
 2. Menu çubuğundan "Sketch" -> "Include Library" -> "Manage Libraries..." seçeneğine gidin.
 3. Arama kutusuna "ROLEBOT" yazın.
-4. ROLEBOT kütüphanesini bulun ve "Install" düğmesine tıklayarak kurulumu tamamlayın.
+4. ROLEBOT kütüphanesini bulun ve "Install" düğmesine tıklayarak kurulumu tamamlayın.
 
 ## PlatformIO ile Kullanım
 
@@ -80,7 +80,7 @@ C++, MicroPython (Text and Block Based)
 - CRC-protected EEPROM records (versioned): `eepromWriteRecord/eepromReadRecord`
 - NTP time sync helpers: `ntpSync/ntpGetDateTimeString` (requires WiFi)
 - OTA firmware updates: `otaBegin/otaHandle` (requires WiFi)
-- `triggerIFTTTEvent()` connects ROLEBOT to IFTTT services (Google Sheets, Gmail, Discord, smart lights, etc.). Start with `examples/2-Advanced/ROLEBOT_IFTTT_Webhook_Example.ino` to log relay events in the cloud.
+- `triggerIFTTTEvent()` connects ROLEBOT to IFTTT services (Google Sheets, Gmail, Discord, smart lights, etc.). Start with `examples/2-Advanced/ROLEBOT_IFTTT_Webhook_Example/ROLEBOT_IFTTT_Webhook_Example.ino` to log relay events in the cloud.
 
 ## Security:
 AES and SSL/TLS hardware accelerators
@@ -100,6 +100,26 @@ CE, ROSH, EMC
   - ArduinoJson
 - **Offline Libraries:**
   - `other_libraries.zip`: Contains all required library dependencies for offline installation.
+
+<!-- EXAMPLES:START -->
+# Examples / Örnekler
+
+**EN:** 28 examples - Basic (2), Advanced (22), Projects (4). Every example follows the same rules:
+- **Turkish / English:** `bool turkish = true;` at the top picks the language. Type `lang` (or `dil`) in the Serial Monitor to switch while it runs. Serial, LCD and web texts follow it.
+- **Serial port (115200 baud):** commands work in both languages (`help` = `yardim`, `angle 90` = `aci 90` = `açı 90`) and with any line-ending setting. Type `help` for the list.
+- **Auto / manual:** 5 examples that drive something (motor, servo, relay, LED, buzzer, robot) start in **AUTO** mode with a demo. Press the **B1** button (GPIO0) to switch to **MANUAL**. In manual mode a short press toggles the relay, a 1 s hold returns to auto; serial commands work too. An actuator command sent from serial also switches to manual.
+- 12 examples need your own settings (WiFi, tokens, keys): fill in the `YOUR_...` placeholders.
+- Each example is in its own folder (`Folder/Folder.ino`), so it shows up under *File > Examples* in the Arduino IDE.
+- `examples/examples.json` lists every example with its board, required modules, summary (TR/EN) and serial commands (used by editor.codlai.com).
+
+**TR:** 28 örnek - Temel (2), İleri (22), Projeler (4). Tüm örnekler aynı kurallara uyar:
+- **Türkçe / İngilizce:** En üstteki `bool turkish = true;` dili seçer. Çalışırken Seri Monitör'e `dil` (veya `lang`) yazarak değiştirebilirsiniz. Seri port, LCD ve web metinleri seçilen dili izler.
+- **Seri port (115200 baud):** komutlar iki dilde de çalışır (`yardim` = `help`, `aci 90` = `açı 90` = `angle 90`) ve satır sonu ayarı ne olursa olsun algılanır. Komut listesi için `yardim` yazın.
+- **Otomatik / manuel:** Bir şey süren 5 örnek (motor, servo, röle, LED, buzzer, robot) **OTOMATİK** modda bir gösteriyle başlar. **B1** butonu (GPIO0) ile **MANUEL** moda geçersiniz. Manuel modda kısa basış röleyi değiştirir, 1 sn basılı tutmak otomatiğe döndürür; seri komutlar da çalışır. Seri porttan gönderilen bir çalıştırma komutu da manuel moda geçirir.
+- 12 örnek sizin ayarlarınızı ister (WiFi, token, anahtar): `YOUR_...` yer tutucularını doldurun.
+- Her örnek kendi klasöründedir (`Klasör/Klasör.ino`); Arduino IDE'de *Dosya > Örnekler* menüsünde görünür.
+- `examples/examples.json` her örneği kartı, gerektirdiği modüller, özeti (TR/EN) ve seri komutlarıyla listeler (editor.codlai.com kullanır).
+<!-- EXAMPLES:END -->
 
 # Library Structure & Contributing / Kütüphane Yapısı ve Katkıda Bulunma
 This library follows a modular design pattern to ensure efficiency.

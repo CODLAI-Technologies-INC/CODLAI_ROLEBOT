@@ -1,0 +1,2096 @@
+{
+  "schema": 1,
+  "library": "CODLAI_ROLEBOT",
+  "description": {
+    "tr": "Örnek dizini: her örneğin yolu, kartı, gereken modüller/ayarlar, özeti ve seri komutları. Kod başlıklarından otomatik üretilir.",
+    "en": "Example index: path, board, required modules/settings, summary and serial commands of each sketch. Generated from the sketch headers."
+  },
+  "examples": [
+    {
+      "name": "ROLEBOT_basic_example",
+      "path": "1-Basic/ROLEBOT_basic_example/ROLEBOT_basic_example.ino",
+      "category": "Basic",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "BUTON VE LED TESTİ",
+        "en": "BUTTON AND LED TEST"
+      },
+      "summary": {
+        "tr": "B1 butonuna (karttaki tek buton) bastığınızda mavi LED yanar, bıraktığınızda söner. Buton her basıldığında / bırakıldığında Seri Port'a BİR KEZ yazılır (ekranı doldurmaz) ve basış sayısı sayılır.",
+        "en": "Press the B1 button (the only button on the board) and the blue LED lights up; release it and the LED goes off. Every press / release is printed ONCE to the Serial port (no flooding) and the presses are counted."
+      },
+      "wiring": "Kablo gerekmez. B1 = GPIO0 (basılıyken LOW), mavi LED = GPIO16. / No wiring needed. B1 = GPIO0 (LOW while pressed), blue LED = GPIO16.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "oku",
+          "en": "read",
+          "description": {
+            "tr": "butonun şu anki durumu ve basış sayısı",
+            "en": "current button state and press count"
+          }
+        },
+        {
+          "tr": "led ac",
+          "en": "led on",
+          "description": {
+            "tr": "LED'i aç (buton bırakılmışken yanık kalır)",
+            "en": "turn the LED on (stays on while the button is released)"
+          }
+        },
+        {
+          "tr": "led kapat",
+          "en": "led off",
+          "description": {
+            "tr": "LED'i kapat",
+            "en": "turn the LED off"
+          }
+        },
+        {
+          "tr": "sifirla",
+          "en": "reset",
+          "description": {
+            "tr": "basış sayacını sıfırla",
+            "en": "reset the press counter"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_basic_example2",
+      "path": "1-Basic/ROLEBOT_basic_example2/ROLEBOT_basic_example2.ino",
+      "category": "Basic",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": true,
+      "title": {
+        "tr": "RÖLE TESTİ - Otomatik demo + Manuel kontrol",
+        "en": "RELAY TEST - Automatic demo + Manual control"
+      },
+      "summary": {
+        "tr": "Açılışta OTOMATİK mod çalışır: iki röle 2 saniyede bir sırayla değişir (ikisi kapalı -> Röle 1 -> Röle 2 -> ikisi açık -> ...). Mavi LED yavaşça yanıp söner. B1 butonu (karttaki tek buton): OTOMATİK modda basınca -> MANUEL moda geçer (röleler kapanır) MANUEL modda kısa basınca -> sıradaki röle durumuna geçer (ikisi kapalı -> Röle 1 -> Röle 2 -> ikisi açık) MANUEL modda 1 sn basılı tutunca -> OTOMATİK moda döner MANUEL modda mavi LED sürekli yanar.",
+        "en": "At startup AUTO mode runs: the two relays change in turn every 2 seconds (both off -> Relay 1 -> Relay 2 -> both on -> ...). The blue LED blinks slowly. B1 button (the only button on the board): press in AUTO mode -> switches to MANUAL mode (relays turn off) short press in MANUAL mode -> goes to the next relay state (both off -> Relay 1 -> Relay 2 -> both on) hold 1 s in MANUAL mode -> back to AUTO mode In MANUAL mode the blue LED stays on."
+      },
+      "wiring": "Röleler kartın üzerindedir (Röle 1 = GPIO12, Röle 2 = GPIO13), B1 = GPIO0, mavi LED = GPIO16. Yükü rölenin COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / The relays are on the board (Relay 1 = GPIO12, Relay 2 = GPIO13), B1 = GPIO0, blue LED = GPIO16. Wire the load to the relay's COM + NO terminals. Only an adult should work with mains voltage (220V).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "oto",
+          "en": "auto",
+          "description": {
+            "tr": "otomatik mod",
+            "en": "auto mode"
+          }
+        },
+        {
+          "tr": "manuel",
+          "en": "manual",
+          "description": {
+            "tr": "manuel mod",
+            "en": "manual mode"
+          }
+        },
+        {
+          "tr": "role1 ac",
+          "en": "relay1 on",
+          "description": {
+            "tr": "Röle 1'i aç (manuel moda geçer)",
+            "en": "turn Relay 1 on (switches to manual)"
+          }
+        },
+        {
+          "tr": "role2 kapat",
+          "en": "relay2 off",
+          "description": {
+            "tr": "Röle 2'yi kapat",
+            "en": "turn Relay 2 off"
+          }
+        },
+        {
+          "tr": "degistir 1",
+          "en": "toggle 1",
+          "description": {
+            "tr": "Röle 1'i tersine çevir",
+            "en": "invert Relay 1"
+          }
+        },
+        {
+          "tr": "hepsi ac",
+          "en": "all on",
+          "description": {
+            "tr": "iki röleyi de aç",
+            "en": "turn both relays on"
+          }
+        },
+        {
+          "tr": "hepsi kapat",
+          "en": "all off",
+          "description": {
+            "tr": "iki röleyi de kapat",
+            "en": "turn both relays off"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "rölelerin durumunu yaz",
+            "en": "print the relay states"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_AP_Mode_Local_Server_Basic_Example",
+      "path": "2-Advanced/ROLEBOT_AP_Mode_Local_Server_Basic_Example/ROLEBOT_AP_Mode_Local_Server_Basic_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "server"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "ERİŞİM NOKTASI (AP) MODUNDA YEREL WEB SUNUCUSU",
+        "en": "LOCAL WEB SERVER IN ACCESS POINT (AP) MODE"
+      },
+      "summary": {
+        "tr": "ROLEBOT kendi WiFi ağını kurar ve içinde basit bir web sayfası yayınlar. İnternet gerekmez. 1) Bu kodu yükleyin. 2) Telefon/bilgisayardan \"CODLAI Server\" ağına bağlanın (şifre: 12345678). 3) Tarayıcıda http://192.168.4.1/demopage adresini açın ve butona tıklayın. Sunucu özelliklerini kullanmak için kütüphaneyi eklemeden ÖNCE \"#define USE_SERVER\" yazılmalıdır (aşağıda var).",
+        "en": "The ROLEBOT creates its own WiFi network and serves a simple web page in it. No internet needed. 1) Upload this code. 2) From a phone/computer, join the \"CODLAI Server\" network (password: 12345678). 3) Open http://192.168.4.1/demopage in a browser and click the button. To use the server features, \"#define USE_SERVER\" must be written BEFORE including the library (it is below)."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "ağ adı, sayfa adresi ve bağlı cihaz sayısı",
+            "en": "network name, page address and connected devices"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_EEPROM_Advanced_Example",
+      "path": "2-Advanced/ROLEBOT_EEPROM_Advanced_Example/ROLEBOT_EEPROM_Advanced_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "EEPROM (KALICI HAFIZA) - GELİŞMİŞ ÖRNEK",
+        "en": "EEPROM (PERSISTENT MEMORY) - ADVANCED EXAMPLE"
+      },
+      "summary": {
+        "tr": "ROLEBOT kütüphanesindeki EEPROM yardımcı fonksiyonlarını gösterir: 16-bit tam sayı, 32-bit tam sayı, metin (String) ve CRC korumalı \"kayıt\" (record). Kayıt, kartın kaç kez açıldığını sayar - kartı birkaç kez yeniden başlatın ve sayının arttığını görün! EEPROM (Flash tabanlı) kalıcı hafızadır; gereksiz sık yazma yapmayın. Adres aralıklarını çakıştırmayın. Bu örneğin adres haritası: 0-1: int16 | 10-13: int32 | 30-95: metin/string | 200-213: kayıt/record",
+        "en": "Demonstrates the EEPROM helper functions of the ROLEBOT library: 16-bit integer, 32-bit integer, text (String) and a CRC-protected \"record\". The record counts how many times the board has booted - restart the board a few times and watch the number grow! EEPROM (Flash-backed) is persistent storage; avoid excessive writes. Do not overlap address ranges. This example's address map: 0-1: int16 | 10-13: int32 | 30-95: text/string | 200-213: record"
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "oku",
+          "en": "read",
+          "description": {
+            "tr": "tüm değerleri hafızadan oku ve yaz",
+            "en": "read and print all values from memory"
+          }
+        },
+        {
+          "tr": "demo",
+          "en": "demo",
+          "description": {
+            "tr": "örnek değerleri yeniden yaz ve oku",
+            "en": "write the sample values again and read them"
+          }
+        },
+        {
+          "tr": "yaz 1234",
+          "en": "write 1234",
+          "description": {
+            "tr": "int16 adresine (0) bir sayı yaz (0-32767)",
+            "en": "write a number to the int16 address (0) (0-32767)"
+          }
+        },
+        {
+          "tr": "sil",
+          "en": "clear",
+          "description": {
+            "tr": "bu örneğin kullandığı alanı sil (0-255)",
+            "en": "erase the area used by this example (0-255)"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESPNOW_Broadcast_Simple_Example",
+      "path": "2-Advanced/ROLEBOT_ESPNOW_Broadcast_Simple_Example/ROLEBOT_ESPNOW_Broadcast_Simple_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "ESP-NOW'A İLK ADIM - en basit kablosuz haberleşme örneği",
+        "en": "FIRST STEP INTO ESP-NOW - the simplest wireless example"
+      },
+      "summary": {
+        "tr": "Bir MAC adresi bilmenize gerek YOK: bu kod bir sayacı \"yayın\" (broadcast) olarak havaya gönderir ve aynı odada ESP-NOW ile dinleyen HERHANGİ bir CODLAI kartı (başka bir ROLEBOT, bir IOTBOT ya da bir MINIBOT - hepsi aynı veri yapısını kullanır) bunu duyabilir. Aynı anda hem gönderiyor hem dinliyoruz. Yayın alındığında mavi LED kısa bir süre yanar. Gönderen kart, paketteki kimlikten (deviceType) tanınır: 40 = IOTBOT, 41 = MINIBOT, 42 = ROLEBOT (40-49 kütüphane örneklerine ayrılmıştır).",
+        "en": "You do NOT need to know any MAC address: this code broadcasts a counter into the air, and ANY nearby CODLAI board listening over ESP-NOW (another ROLEBOT, an IOTBOT, or a MINIBOT - they all share the same data structure) can hear it. We both send AND listen at the same time. The blue LED lights briefly whenever a broadcast is received. The sender is recognised by the ID in the packet (deviceType): 40 = IOTBOT, 41 = MINIBOT, 42 = ROLEBOT (40-49 are reserved for the library examples)."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed. ROLEBOT'ta LCD ekran YOK; tüm bilgiler Seri Port (USB) üzerinden verilir. / ROLEBOT has NO LCD screen; all feedback is given through Serial (USB).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "dur",
+          "en": "pause",
+          "description": {
+            "tr": "yayını durdur (dinlemeye devam eder)",
+            "en": "stop broadcasting (keeps listening)"
+          }
+        },
+        {
+          "tr": "devam",
+          "en": "resume",
+          "description": {
+            "tr": "yayına devam et",
+            "en": "resume broadcasting"
+          }
+        },
+        {
+          "tr": "gonder",
+          "en": "send",
+          "description": {
+            "tr": "hemen bir yayın gönder",
+            "en": "send one broadcast now"
+          }
+        },
+        {
+          "tr": "aralik 500",
+          "en": "interval 500",
+          "description": {
+            "tr": "yayın aralığı (ms, 200-10000)",
+            "en": "broadcast interval (ms, 200-10000)"
+          }
+        },
+        {
+          "tr": "sifirla",
+          "en": "reset",
+          "description": {
+            "tr": "sayacı sıfırla",
+            "en": "reset the counter"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESPNOW_Earthquake_Alert_Receiver_Example",
+      "path": "2-Advanced/ROLEBOT_ESPNOW_Earthquake_Alert_Receiver_Example/ROLEBOT_ESPNOW_Earthquake_Alert_Receiver_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "GERÇEK PROJE - Kablosuz Deprem Uyarı Ağı (ROLEBOT ALICI)",
+        "en": "A REAL PROJECT - Wireless Earthquake Alert Network (ROLEBOT RECEIVER)"
+      },
+      "summary": {
+        "tr": "Bu ROLEBOT, IOTBOT'un ESP-NOW ile yayınladığı \"deprem\" mesajını dinler. \"deprem = 1\" gelince: Röle 1 ACİL DURUM LAMBASINI yakar, Röle 2 doğalgaz vanasını / ana elektriği KESER ve LED yanıp söner. \"deprem = 0\" gelince her şey eski haline döner. B1 butonu = yerel sıfırlama (IOTBOT'a ulaşılamasa bile burada alarmı bitirir). Önce IOTBOT'a IOTBOT_ESPNOW_Earthquake_Alert_Sender_Example.ino, istersen bir MINIBOT'a da MINIBOT_ESPNOW_Earthquake_Alert_Receiver_Example.ino dosyasını yükleyin.",
+        "en": "This ROLEBOT listens for the \"deprem\" message the IOTBOT broadcasts over ESP-NOW. On \"deprem = 1\": Relay 1 turns the EMERGENCY LIGHT on, Relay 2 CUTS the gas valve / main power and the LED blinks. On \"deprem = 0\" everything goes back to normal. B1 button = local reset (ends the alarm here even if the IOTBOT cannot be reached). First upload IOTBOT_ESPNOW_Earthquake_Alert_Sender_Example.ino to an IOTBOT, and optionally MINIBOT_ESPNOW_Earthquake_Alert_Receiver_Example.ino to a MINIBOT."
+      },
+      "wiring": "Her rölenin 3 ucu vardır: COM (ortak), NO (normalde açık), NC (normalde kapalı). - Röle 1 (acil lamba): lambayı COM + NO üzerinden bağlayın -> röle çekmeyince lamba sönük, alarmda röle çekince yanar. - Röle 2 (gaz vanası / ana hat): vananın beslemesini COM + NC üzerinden bağlayın -> normalde NC kapalı, vana enerjili ve AÇIK; alarmda röle çeker, NC açılır, vana enerjisiz kalıp KAPANIR (\"enerji kesilince kapanan\" tip vana kullanın).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "sifirla",
+          "en": "reset",
+          "description": {
+            "tr": "alarmı yerel olarak bitir (B1 ile aynı)",
+            "en": "end the alarm locally (same as B1)"
+          }
+        },
+        {
+          "tr": "test",
+          "en": "test",
+          "description": {
+            "tr": "alarmı DENEME için başlat (lamba yanar, vana kesilir)",
+            "en": "start the alarm as a TEST (light on, valve cut)"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "alarm ve röle durumu",
+            "en": "alarm and relay state"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESPNOW_Fan_Control_Reactive_Example",
+      "path": "2-Advanced/ROLEBOT_ESPNOW_Fan_Control_Reactive_Example/ROLEBOT_ESPNOW_Fan_Control_Reactive_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": true,
+      "title": {
+        "tr": "KABLOSUZ AKILLI EV FİKRİ - OTOMATİK VANTİLATÖR",
+        "en": "A WIRELESS SMART HOME IDEA - AUTOMATIC FAN"
+      },
+      "summary": {
+        "tr": "Bu ROLEBOT'un kendi sıcaklık sensörü YOK - bunun yerine, aynı odadaki bir IOTBOT'un yayınladığı (broadcast) DHT sıcaklık verisini ESP-NOW ile dinler ve sıcaklık yükselince Röle 1'e bağlı GERÇEK bir vantilatörü/fanı otomatik açar. Önce IOTBOT_ESPNOW_Temperature_Broadcast_Example.ino dosyasını bir IOTBOT'a yükleyin, sonra bu kodu bir ROLEBOT'a yükleyin - IOTBOT'un DHT sensörünü elinizle ısıtınca ROLEBOT'un rölesi (ve bağlıysa vantilatörünüz) açılır! OTOMATİK mod (açılışta): sıcaklık eşiğin ÜSTÜNDEYSE fan açık, değilse kapalı. B1 butonu: OTOMATİK modda basınca MANUEL moda geçer. MANUEL modda kısa basış fanı açar/kapatır, 1 sn basılı tutmak OTOMATİK moda döndürür. Mavi LED, fan açıkken yanar.",
+        "en": "This ROLEBOT has NO temperature sensor of its own - instead, it listens over ESP-NOW to the DHT temperature data broadcast by an IOTBOT in the same room, and automatically turns on a REAL fan (wired to Relay 1) when it gets hot. First upload IOTBOT_ESPNOW_Temperature_Broadcast_Example.ino to an IOTBOT, then upload this code to a ROLEBOT - warm up the IOTBOT's DHT sensor with your hand and watch the ROLEBOT's relay (and your fan, if wired) turn on! AUTO mode (at startup): fan on when the temperature is ABOVE the threshold. B1 button: in AUTO mode a press switches to MANUAL mode. In MANUAL mode a short press turns the fan on/off, holding it 1 s goes back to AUTO mode. The blue LED is on while the fan is on."
+      },
+      "wiring": "Fanı Röle 1'in COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / Wire the fan to Relay 1's COM + NO terminals. Only an adult should work with mains voltage (220V). ROLEBOT'ta LCD ekran YOK; tüm bilgiler Seri Port (USB) üzerinden verilir. / ROLEBOT has NO LCD screen; all feedback is given through Serial (USB).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "oto",
+          "en": "auto",
+          "description": {
+            "tr": "otomatik mod (sıcaklığa göre)",
+            "en": "auto mode (by temperature)"
+          }
+        },
+        {
+          "tr": "manuel",
+          "en": "manual",
+          "description": {
+            "tr": "manuel mod",
+            "en": "manual mode"
+          }
+        },
+        {
+          "tr": "ac",
+          "en": "on",
+          "description": {
+            "tr": "fanı aç (manuel moda geçer; \"role1 ac\" da olur)",
+            "en": "fan on (switches to manual; \"relay1 on\" works too)"
+          }
+        },
+        {
+          "tr": "kapat",
+          "en": "off",
+          "description": {
+            "tr": "fanı kapat",
+            "en": "fan off"
+          }
+        },
+        {
+          "tr": "degistir",
+          "en": "toggle",
+          "description": {
+            "tr": "fanı tersine çevir",
+            "en": "invert the fan"
+          }
+        },
+        {
+          "tr": "esik 28",
+          "en": "threshold 28",
+          "description": {
+            "tr": "sıcaklık eşiği (°C)",
+            "en": "temperature threshold (°C)"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "son sıcaklık, eşik, fan durumu",
+            "en": "last temperature, threshold, fan state"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESPNOW_NightLight_Reactive_Example",
+      "path": "2-Advanced/ROLEBOT_ESPNOW_NightLight_Reactive_Example/ROLEBOT_ESPNOW_NightLight_Reactive_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": true,
+      "title": {
+        "tr": "KABLOSUZ AKILLI EV FİKRİ - OTOMATİK GECE LAMBASI",
+        "en": "A WIRELESS SMART HOME IDEA - AUTOMATIC NIGHT LIGHT"
+      },
+      "summary": {
+        "tr": "Bu ROLEBOT'un kendi ışık sensörü YOK - bunun yerine, aynı odadaki bir IOTBOT'un yayınladığı (broadcast) ışık sensörü verisini ESP-NOW ile dinler ve hava kararınca (ışık değeri düşünce) Röle 1'e bağlı GERÇEK bir lambayı otomatik açar. İki kartı kablo OLMADAN birlikte çalışır hale getiriyoruz. Önce IOTBOT_ESPNOW_LightSensor_Broadcast_Example.ino dosyasını bir IOTBOT'a yükleyin, sonra bu kodu bir ROLEBOT'a yükleyin - IOTBOT'un ışık sensörünü elinizle kapatınca ROLEBOT'un rölesi (ve bağlıysa lambanız) açılır! OTOMATİK mod (açılışta): ışık değeri eşiğin ALTINDAYSA (karanlık) lamba açık. B1 butonu: OTOMATİK modda basınca MANUEL moda geçer. MANUEL modda kısa basış lambayı açar/kapatır, 1 sn basılı tutmak OTOMATİK moda döndürür. Mavi LED, lamba açıkken yanar.",
+        "en": "This ROLEBOT has NO light sensor of its own - instead, it listens over ESP-NOW to the light sensor data broadcast by an IOTBOT in the same room, and automatically turns on a REAL lamp (wired to Relay 1) when it gets dark. We make two boards work together WITHOUT any wire between them. First upload IOTBOT_ESPNOW_LightSensor_Broadcast_Example.ino to an IOTBOT, then upload this code to a ROLEBOT - cover the IOTBOT's light sensor with your hand and watch the ROLEBOT's relay (and your lamp, if wired) turn on! AUTO mode (at startup): lamp on when the light value is BELOW the threshold (dark). B1 button: in AUTO mode a press switches to MANUAL mode. In MANUAL mode a short press turns the lamp on/off, holding it 1 s goes back to AUTO mode. The blue LED is on while the lamp is on."
+      },
+      "wiring": "Lambayı Röle 1'in COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / Wire the lamp to Relay 1's COM + NO terminals. Only an adult should work with mains voltage (220V). ROLEBOT'ta LCD ekran YOK; tüm bilgiler Seri Port (USB) üzerinden verilir. / ROLEBOT has NO LCD screen; all feedback is given through Serial (USB).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "oto",
+          "en": "auto",
+          "description": {
+            "tr": "otomatik mod (ışığa göre)",
+            "en": "auto mode (by light)"
+          }
+        },
+        {
+          "tr": "manuel",
+          "en": "manual",
+          "description": {
+            "tr": "manuel mod",
+            "en": "manual mode"
+          }
+        },
+        {
+          "tr": "ac",
+          "en": "on",
+          "description": {
+            "tr": "lambayı aç (manuel moda geçer; \"role1 ac\" da olur)",
+            "en": "lamp on (switches to manual; \"relay1 on\" works too)"
+          }
+        },
+        {
+          "tr": "kapat",
+          "en": "off",
+          "description": {
+            "tr": "lambayı kapat",
+            "en": "lamp off"
+          }
+        },
+        {
+          "tr": "degistir",
+          "en": "toggle",
+          "description": {
+            "tr": "lambayı tersine çevir",
+            "en": "invert the lamp"
+          }
+        },
+        {
+          "tr": "esik 1500",
+          "en": "threshold 1500",
+          "description": {
+            "tr": "karanlık eşiği (0-4095)",
+            "en": "darkness threshold (0-4095)"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "son ışık değeri, eşik, lamba durumu",
+            "en": "last light value, threshold, lamp state"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESPNOW_Remote_Relay_Receiver_Example",
+      "path": "2-Advanced/ROLEBOT_ESPNOW_Remote_Relay_Receiver_Example/ROLEBOT_ESPNOW_Remote_Relay_Receiver_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "GERÇEK PROJE - Kablosuz Röle Alıcısı",
+        "en": "A REAL PROJECT - Wireless Relay Receiver"
+      },
+      "summary": {
+        "tr": "Bu ROLEBOT, IOTBOT kumanda panelinin ESP-NOW ile yayınladığı komutları dinler: \"role1\" -> Röle 1, \"role2\" -> Röle 2, \"led\" -> mavi LED. B1 butonu ile Röle 1'i elle de açıp kapatabilirsiniz - panel kapalı olsa bile çalışır. Seri porttan da kontrol edebilirsiniz. Kural basit: \"son komut kazanır\" (panelde bir",
+        "en": "This ROLEBOT listens to the commands the IOTBOT control panel broadcasts over ESP-NOW: \"role1\" -> Relay 1, \"role2\" -> Relay 2, \"led\" -> blue LED. The B1 button also toggles Relay 1 by hand - it works even when the panel is off. You can control it from the Serial port too. The rule is simple: \"the last command wins\" (the panel when something changes there, the button when it is pressed here, the Serial port when a command is typed). First upload IOTBOT_ESPNOW_Remote_Control_Panel_Example.ino to an IOTBOT; optionally upload MINIBOT_ESPNOW_Remote_Servo_Receiver_Example.ino to a MINIBOT."
+      },
+      "wiring": "Yükleri (lamba, fan...) rölelerin COM + NO uçlarına bağlayın: röle çekince yük çalışır. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / Wire the loads (lamp, fan...) to the relays' COM + NO terminals: the load runs when the relay pulls in. Only an adult should work with mains voltage (220V). ROLEBOT'ta LCD ekran YOK; tüm bilgiler Seri Port (USB) üzerinden verilir. / ROLEBOT has NO LCD screen; all feedback is given through Serial (USB).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "role1 ac",
+          "en": "relay1 on",
+          "description": {
+            "tr": "Röle 1'i aç",
+            "en": "turn Relay 1 on"
+          }
+        },
+        {
+          "tr": "role2 kapat",
+          "en": "relay2 off",
+          "description": {
+            "tr": "Röle 2'yi kapat",
+            "en": "turn Relay 2 off"
+          }
+        },
+        {
+          "tr": "degistir 1",
+          "en": "toggle 1",
+          "description": {
+            "tr": "Röle 1'i tersine çevir",
+            "en": "invert Relay 1"
+          }
+        },
+        {
+          "tr": "hepsi kapat",
+          "en": "all off",
+          "description": {
+            "tr": "iki röleyi de kapat",
+            "en": "turn both relays off"
+          }
+        },
+        {
+          "tr": "led ac",
+          "en": "led on",
+          "description": {
+            "tr": "mavi LED'i aç (\"led kapat\" / \"led off\")",
+            "en": "turn the blue LED on (\"led off\" / \"led kapat\")"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "röle ve LED durumları",
+            "en": "relay and LED states"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESPNOW_Simple_Messaging_Example",
+      "path": "2-Advanced/ROLEBOT_ESPNOW_Simple_Messaging_Example/ROLEBOT_ESPNOW_Simple_Messaging_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": true,
+      "title": {
+        "tr": "ÇOCUKLAR İÇİN BASİT KABLOSUZ MESAJLAŞMA",
+        "en": "SIMPLE WIRELESS MESSAGING FOR KIDS"
+      },
+      "summary": {
+        "tr": "Bir sayı mesajı alındığında (örneğin başka bir kart bir sensör değeri gönderdiğinde) değer belirli bir eşiği aşarsa Röle 1'i tetikler - \"kablosuz uzaktan komut\" fikrinin en basit hali. Aynı zamanda her aldığı metin mesajını Seri Port'a yazdırır. Seri porttan siz de metin ve sayı gönderebilirsiniz (iki ROLEBOT ile birbirinize mesaj atın!). OTOMATİK mod (açılışta): gelen sayı eşiğin ÜSTÜNDEYSE Röle 1 açık, değilse kapalı. B1 butonu: OTOMATİK modda basınca MANUEL moda geçer. MANUEL modda kısa basış Röle 1'i açar/kapatır, 1 sn basılı tutmak OTOMATİK moda döndürür.",
+        "en": "When a number message is received (e.g. another board sends a sensor value) and it crosses a threshold, it triggers Relay 1 - the simplest form of a \"wireless remote command\" idea. It also prints every text message it receives to the Serial port. You can send text and numbers from the Serial port too (message each other with two ROLEBOTs!). AUTO mode (at startup): Relay 1 is on when the received number is ABOVE the threshold. B1 button: in AUTO mode a press switches to MANUAL mode. In MANUAL mode a short press turns Relay 1 on/off, holding it 1 s goes back to AUTO mode."
+      },
+      "wiring": "Kablo gerekmez; istersen Röle 1'e (COM + NO) bir yük bağlayın. Diğer kart AYNI ESP-NOW kanalını (1) kullanmalı. / No wiring needed; optionally wire a load to Relay 1 (COM + NO). The other board must use the SAME ESP-NOW channel (1). ROLEBOT'ta LCD ekran YOK; tüm bilgiler Seri Port (USB) üzerinden verilir. / ROLEBOT has NO LCD screen; all feedback is given through Serial (USB).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "metin Merhaba",
+          "en": "text Hello",
+          "description": {
+            "tr": "herkese metin mesajı gönder",
+            "en": "send a text message to everyone"
+          }
+        },
+        {
+          "tr": "sayi 75",
+          "en": "number 75",
+          "description": {
+            "tr": "herkese \"sayi\" adlı bir sayı gönder",
+            "en": "send a number named \"sayi\" to everyone"
+          }
+        },
+        {
+          "tr": "sayi isik 75",
+          "en": "number light 75",
+          "description": {
+            "tr": "herkese \"isik\" adlı bir sayı gönder",
+            "en": "send a number named \"light\" to everyone"
+          }
+        },
+        {
+          "tr": "oto",
+          "en": "auto",
+          "description": {
+            "tr": "otomatik mod (gelen sayıya göre)",
+            "en": "auto mode (by the received number)"
+          }
+        },
+        {
+          "tr": "manuel",
+          "en": "manual",
+          "description": {
+            "tr": "manuel mod",
+            "en": "manual mode"
+          }
+        },
+        {
+          "tr": "ac",
+          "en": "kapat         / on / off",
+          "description": {
+            "tr": "Röle 1 (manuel moda geçer)",
+            "en": "Relay 1 (switches to manual)"
+          }
+        },
+        {
+          "tr": "esik 50",
+          "en": "threshold 50",
+          "description": {
+            "tr": "tetikleme eşiği",
+            "en": "trigger threshold"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "son mesaj ve röle durumu",
+            "en": "last message and relay state"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESP_NOW_Receiver_Example",
+      "path": "2-Advanced/ROLEBOT_ESP_NOW_Receiver_Example/ROLEBOT_ESP_NOW_Receiver_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "ESP-NOW ALICI ÖRNEĞİ",
+        "en": "ESP-NOW RECEIVER EXAMPLE"
+      },
+      "summary": {
+        "tr": "Kendi veri yapımızı (struct_message: metin, tam sayı, ondalıklı sayı, doğru/yanlış) ESP-NOW ile alır ve Seri Port'a yazar. Gönderici olarak ROLEBOT_ESP_NOW_Sender_Example.ino dosyasını başka bir karta yükleyin (veri yapısı İKİ TARAFTA AYNI olmalı). Her paket geldiğinde mavi LED kısa bir süre yanar.",
+        "en": "Receives our own data structure (struct_message: text, integer, float, true/false) over ESP-NOW and prints it to the Serial port. Upload ROLEBOT_ESP_NOW_Sender_Example.ino to another board as the sender (the data structure must be THE SAME on both sides). The blue LED lights briefly for every packet."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "alınan paket sayısı ve bu kartın MAC adresi",
+            "en": "packets received and this board's MAC address"
+          }
+        },
+        {
+          "tr": "sifirla",
+          "en": "reset",
+          "description": {
+            "tr": "sayacı sıfırla",
+            "en": "reset the counter"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_ESP_NOW_Sender_Example",
+      "path": "2-Advanced/ROLEBOT_ESP_NOW_Sender_Example/ROLEBOT_ESP_NOW_Sender_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "espnow"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "ESP-NOW GÖNDERİCİ ÖRNEĞİ",
+        "en": "ESP-NOW SENDER EXAMPLE"
+      },
+      "summary": {
+        "tr": "Kendi veri yapımızı (struct_message: metin, tam sayı, ondalıklı sayı, doğru/yanlış) 2 saniyede bir ESP-NOW ile gönderir. Alıcı olarak ROLEBOT_ESP_NOW_Receiver_Example.ino dosyasını başka bir karta yükleyin (veri yapısı İKİ TARAFTA AYNI olmalı). Adres FF:FF:FF:FF:FF:FF = herkese yayın; sadece tek bir karta göndermek için alıcının MAC adresini yazın (alıcı açılışta MAC adresini yazar). B1 butonuna basınca hemen bir paket gönderilir.",
+        "en": "Sends our own data structure (struct_message: text, integer, float, true/false) over ESP-NOW every 2 seconds. Upload ROLEBOT_ESP_NOW_Receiver_Example.ino to another board as the receiver (the data structure must be THE SAME on both sides). Address FF:FF:FF:FF:FF:FF = broadcast to everyone; to send to a single board, write the receiver's MAC address (the receiver prints its MAC address at startup). Press B1 to send a packet right away."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "gonder",
+          "en": "send",
+          "description": {
+            "tr": "hemen bir paket gönder",
+            "en": "send a packet now"
+          }
+        },
+        {
+          "tr": "metin Merhaba",
+          "en": "text Hello",
+          "description": {
+            "tr": "gönderilecek metni değiştir",
+            "en": "change the text to send"
+          }
+        },
+        {
+          "tr": "dur",
+          "en": "pause",
+          "description": {
+            "tr": "otomatik gönderimi durdur",
+            "en": "stop automatic sending"
+          }
+        },
+        {
+          "tr": "devam",
+          "en": "resume",
+          "description": {
+            "tr": "otomatik gönderime devam et",
+            "en": "resume automatic sending"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Email_Sender_Example",
+      "path": "2-Advanced/ROLEBOT_Email_Sender_Example/ROLEBOT_Email_Sender_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "email"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "E-POSTA GÖNDERİCİ",
+        "en": "EMAIL SENDER"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanır ve açılışta bir deneme e-postası gönderir. Sonra B1 butonuna basarak ya da Seri Port'tan \"gonder\" yazarak tekrar gönderebilirsiniz (örneğin \"kapı açıldı\" gibi bir uyarı için). Gmail için normal şifreniz ÇALIŞMAZ: Google hesabınızda 2 adımlı doğrulamayı açıp bir \"Uygulama şifresi\" oluşturun ve AUTHOR_PASSWORD'e onu yazın.",
+        "en": "The ROLEBOT connects to WiFi and sends a test email at startup. After that, press the B1 button or type \"send\" on the Serial port to send again (e.g. for an alert like \"the door opened\"). For Gmail your normal password does NOT work: turn on 2-step verification in your Google account, create an \"App password\" and put it in AUTHOR_PASSWORD."
+      },
+      "wiring": "Kablo gerekmez. Aşağıdaki bilgileri kendi bilgilerinizle değiştirin. / No wiring needed. Replace the settings below with your own.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "gonder",
+          "en": "send",
+          "description": {
+            "tr": "deneme e-postası gönder (birkaç saniye sürer)",
+            "en": "send a test email (takes a few seconds)"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "WiFi durumu ve gönderilen e-posta sayısı",
+            "en": "WiFi state and number of emails sent"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English; e-posta metni de)",
+            "en": "switch language (Turkish <-> English; email text too)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Firebase_ID_Verification_Basic_Example",
+      "path": "2-Advanced/ROLEBOT_Firebase_ID_Verification_Basic_Example/ROLEBOT_Firebase_ID_Verification_Basic_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "firebase"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "FIREBASE KULLANICI DOĞRULAMA VE VERİ OKUMA/YAZMA",
+        "en": "FIREBASE USER VERIFICATION AND DATA READ/WRITE"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanır, bir Firebase kullanıcısıyla (e-posta + şifre) giriş yapar, Realtime Database'e birkaç değer yazar ve sonra dakikada bir geri okur. Firebase özelliklerini kullanmak için kütüphaneyi eklemeden ÖNCE \"#define USE_FIREBASE\" yazılmalıdır (aşağıda var). Firebase konsolunda: Authentication'da \"E-posta/Şifre\" ile bir kullanıcı oluşturun; Realtime Database adresini ve Web API anahtarını (Proje ayarları) aşağıya yazın.",
+        "en": "The ROLEBOT connects to WiFi, signs in with a Firebase user (email + password), writes a few values to the Realtime Database and then reads them back once a minute. To use the Firebase features, \"#define USE_FIREBASE\" must be written BEFORE including the library (it is below). In the Firebase console: create a user with \"Email/Password\" in Authentication; put the Realtime Database URL and the Web API key (Project settings) below."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "oku",
+          "en": "read",
+          "description": {
+            "tr": "değerleri şimdi oku",
+            "en": "read the values now"
+          }
+        },
+        {
+          "tr": "sicaklik 30",
+          "en": "temp 30",
+          "description": {
+            "tr": "/device/temperature değerini yaz",
+            "en": "write the /device/temperature value"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_IFTTT_Webhook_Example",
+      "path": "2-Advanced/ROLEBOT_IFTTT_Webhook_Example/ROLEBOT_IFTTT_Webhook_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "ifttt",
+        "wifi"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "IFTTT WEBHOOK",
+        "en": "IFTTT WEBHOOK"
+      },
+      "summary": {
+        "tr": "ROLEBOT açıldığında ve B1 butonuna basıldığında bir IFTTT Webhook olayını tetikler; IFTTT de bunu istediğiniz bir servise iletir (Google E-Tablolar, Gmail, Discord, akıllı lambalar...). Geri bildirim olarak LED ve Röle 1 yarım saniye açılır. Kurulum özeti: 1. IFTTT'de Webhooks -> \"Receive a web request\" tetikleyicili bir applet oluşturun ve Event Name'i aşağıdaki iftttEventName ile aynı yapın. 2. İstediğiniz eylem servisini seçip applet'i bitirin. 3. https://ifttt.com/maker_webhooks (Documentation) sayfasındaki anahtarı iftttWebhookKey'e yapıştırın. 4. JSON verisi standart value1/2/3 alanlarını kullanır; bunları eylemde kullanabilirsiniz. USE_IFTTT tanımlanınca kütüphane WiFi'yi kendisi açar; \"#define USE_WIFI\" gerekmez.",
+        "en": "Triggers an IFTTT Webhook event when the ROLEBOT boots and when the B1 button is pressed; IFTTT then forwards it to any service you like (Google Sheets, Gmail, Discord, smart lights...). As feedback the LED and Relay 1 turn on for half a second. Setup summary: 1. Create an IFTTT applet that uses Webhooks -> \"Receive a web request\" and set the Event Name to match iftttEventName below. 2. Select your desired action service and finish the applet. 3. Grab the key from https://ifttt.com/maker_webhooks (Documentation tab) and paste it into iftttWebhookKey. 4. The JSON payload uses the standard value1/2/3 fields that you can reuse in the action. With USE_IFTTT the library enables WiFi automatically; \"#define USE_WIFI\" is not needed."
+      },
+      "wiring": "Kablo gerekmez; istersen Röle 1'e (COM + NO) küçük bir yük bağlayın. / No wiring needed; optionally wire a small load to Relay 1 (COM + NO).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "gonder",
+          "en": "send",
+          "description": {
+            "tr": "olayı şimdi tetikle (B1 ile aynı)",
+            "en": "trigger the event now (same as B1)"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "WiFi durumu ve gönderilen olay sayısı",
+            "en": "WiFi state and number of events sent"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Internet_Clock_Relay_Example",
+      "path": "2-Advanced/ROLEBOT_Internet_Clock_Relay_Example/ROLEBOT_Internet_Clock_Relay_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "wifi"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": true,
+      "title": {
+        "tr": "İNTERNET SAATİ - Saate Göre Röle",
+        "en": "INTERNET TIME - Relays by the Clock"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanıp saati internetten (NTP) çeker. OTOMATİK modda (açılışta): \"Saat 19:00 ile 23:30 ARASINDA İSE\" Röle 1 (örneğin lamba) açık (ntpTimeIsBetween). \"Saat 07:00 İSE\" Röle 2 (örneğin bahçe pompası) o DAKİKA boyunca açık (ntpTimeIs) yani her sabah 1 dakika sulama. \"Saat 12:00 OLUNCA\" LED 3 kez yanıp söner - BİR KEZ (ntpTimeReached). Saat her 6 saatte bir GÜNCELLENİR (ntpUpdate). Bu fonksiyonlar editördeki \"İnternet saatini kullan / güncelle\", \"saat ... ise\", \"saat ... olunca\" bloklarının karşılığıdır. Daha gelişmiş bir haftalık program için: ROLEBOT_NTP_Scheduled_Relay_Example.ino B1 butonu: OTOMATİK modda basınca MANUEL moda geçer (röleler kapanır). MANUEL modda kısa basış sıradaki röle durumuna geçer (ikisi kapalı -> Röle 1 -> Röle 2 -> ikisi açık), 1 sn basılı tutmak OTOMATİK moda döndürür. MANUEL modda mavi LED sürekli yanar.",
+        "en": "The ROLEBOT connects to WiFi and gets the time from the internet (NTP). In AUTO mode (at startup): \"IF the time is BETWEEN 19:00 and 23:30\" Relay 1 (e.g. a lamp) is on (ntpTimeIsBetween). \"IF it is 07:00\" Relay 2 (e.g. a garden pump) is on for that MINUTE (ntpTimeIs) i.e. 1 minute of watering every morning. \"WHEN it is 12:00\" the LED blinks 3 times - ONCE (ntpTimeReached). The time is UPDATED every 6 hours (ntpUpdate). These functions are what the editor's \"use / update internet time\", \"if time is ...\", \"when time is ...\" blocks call. For a richer weekly schedule see ROLEBOT_NTP_Scheduled_Relay_Example.ino B1 button: in AUTO mode a press switches to MANUAL mode (relays turn off). In MANUAL mode a short press goes to the next relay state (both off -> Relay 1 -> Relay 2 -> both on), holding it 1 s goes back to AUTO mode. In MANUAL mode the blue LED stays on."
+      },
+      "wiring": "Lamba Röle 1'e, pompa Röle 2'ye (COM + NO; 220V bağlantılarını bir yetişkin yapmalıdır). Aşağıya WiFi adınızı ve şifrenizi yazın. / Lamp on Relay 1, pump on Relay 2 (COM + NO; mains wiring must be done by an adult). Fill in your WiFi name and password below.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "oto",
+          "en": "auto",
+          "description": {
+            "tr": "otomatik mod (saate göre)",
+            "en": "auto mode (by the clock)"
+          }
+        },
+        {
+          "tr": "manuel",
+          "en": "manual",
+          "description": {
+            "tr": "manuel mod",
+            "en": "manual mode"
+          }
+        },
+        {
+          "tr": "role1 ac",
+          "en": "relay1 on",
+          "description": {
+            "tr": "Röle 1'i aç (manuel moda geçer)",
+            "en": "turn Relay 1 on (switches to manual)"
+          }
+        },
+        {
+          "tr": "role2 kapat",
+          "en": "relay2 off",
+          "description": {
+            "tr": "Röle 2'yi kapat",
+            "en": "turn Relay 2 off"
+          }
+        },
+        {
+          "tr": "degistir 1",
+          "en": "toggle 1",
+          "description": {
+            "tr": "Röle 1'i tersine çevir",
+            "en": "invert Relay 1"
+          }
+        },
+        {
+          "tr": "hepsi kapat",
+          "en": "all off",
+          "description": {
+            "tr": "iki röleyi de kapat",
+            "en": "turn both relays off"
+          }
+        },
+        {
+          "tr": "saat",
+          "en": "time",
+          "description": {
+            "tr": "saat ve röle durumları",
+            "en": "time and relay states"
+          }
+        },
+        {
+          "tr": "guncelle",
+          "en": "update",
+          "description": {
+            "tr": "saati internetten hemen yeniden al",
+            "en": "fetch the time from the internet now"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_NTP_Time_Advanced_Example",
+      "path": "2-Advanced/ROLEBOT_NTP_Time_Advanced_Example/ROLEBOT_NTP_Time_Advanced_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "wifi"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "İNTERNET SAATİ (NTP)",
+        "en": "INTERNET TIME (NTP)"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanır ve doğru saati internetten (NTP) alır. Saat 10 saniyede bir Seri Port'a yazılır. WiFi bağlantısı kurulduktan SONRA ntpBegin() çağrılmalıdır.",
+        "en": "The ROLEBOT connects to WiFi and gets the correct time from the internet (NTP). The time is printed to the Serial port every 10 seconds. Call ntpBegin() AFTER connecting to WiFi."
+      },
+      "wiring": "Kablo gerekmez. Aşağıya WiFi adınızı ve şifrenizi yazın. / No wiring needed. Fill in your WiFi name and password below.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "saat",
+          "en": "time",
+          "description": {
+            "tr": "tarih, saat, haftanın günü ve epoch değerini şimdi yaz",
+            "en": "print date, time, weekday and epoch now"
+          }
+        },
+        {
+          "tr": "guncelle",
+          "en": "update",
+          "description": {
+            "tr": "saati internetten hemen yeniden al",
+            "en": "fetch the time from the internet now"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_OTA_Update_Example",
+      "path": "2-Advanced/ROLEBOT_OTA_Update_Example/ROLEBOT_OTA_Update_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "ota",
+        "wifi"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "KABLOSUZ YAZILIM GÜNCELLEME (OTA - Over The Air)",
+        "en": "WIRELESS FIRMWARE UPDATE (OTA - Over The Air)"
+      },
+      "summary": {
+        "tr": "İlk yüklemeyi USB kablosuyla yapın; sonra ROLEBOT aynı WiFi ağındayken yeni kodları KABLOSUZ yükleyebilirsiniz: Arduino IDE'de \"Araçlar > Port\" menüsünde ağ portu olarak \"ROLEBOT-OTA\" görünür (PlatformIO: upload_protocol = espota, upload_port = <IP adresi>). Şifre: 1234. OTA için önce WiFi bağlantısı kurulmalı ve loop() içinde otaHandle() sürekli çağrılmalıdır (aşağıda var). Kütüphaneyi eklemeden ÖNCE \"#define USE_OTA\" yazılmalıdır. Mavi LED, OTA hazırken yavaşça yanıp söner (kart çalışıyor mu görmek için).",
+        "en": "Do the first upload with the USB cable; after that, while the ROLEBOT is on the same WiFi network, you can upload new code WIRELESSLY: in the Arduino IDE \"Tools > Port\" menu, \"ROLEBOT-OTA\" shows up as a network port (PlatformIO: upload_protocol = espota, upload_port = <IP address>). Password: 1234. For OTA, WiFi must be connected first and otaHandle() must be called continuously in loop() (done below). \"#define USE_OTA\" must be written BEFORE including the library. The blue LED blinks slowly while OTA is ready (to see that the board is running)."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "WiFi, IP adresi ve OTA cihaz adı",
+            "en": "WiFi, IP address and OTA device name"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_STA_Mode_Local_Server_Basic_Example",
+      "path": "2-Advanced/ROLEBOT_STA_Mode_Local_Server_Basic_Example/ROLEBOT_STA_Mode_Local_Server_Basic_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "server"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "İSTASYON (STA) MODUNDA YEREL WEB SUNUCUSU",
+        "en": "LOCAL WEB SERVER IN STATION (STA) MODE"
+      },
+      "summary": {
+        "tr": "ROLEBOT evinizin WiFi ağına bağlanır ve o ağda basit bir web sayfası yayınlar. Aynı ağdaki telefon/bilgisayardan açabilirsiniz. WiFi'ye bağlanamazsa kendi ağını (AP modu) kurar. 1) Aşağıya WiFi adınızı ve şifrenizi yazın, kodu yükleyin. 2) Seri Port'ta yazan sayfa adresini (örn. http://192.168.1.45/demopage) aynı ağdaki bir tarayıcıda açın. AP moduna düştüyse \"CODLAI Server\" ağına bağlanıp http://192.168.4.1/demopage adresini açın. Sunucu özelliklerini kullanmak için kütüphaneyi eklemeden ÖNCE \"#define USE_SERVER\" yazılmalıdır (aşağıda var).",
+        "en": "The ROLEBOT joins your home WiFi network and serves a simple web page on it. Open it from a phone/computer on the same network. If it cannot connect to WiFi, it creates its own network (AP mode). 1) Enter your WiFi name and password below and upload the code. 2) Open the page address printed on the Serial port (e.g. http://192.168.1.45/demopage) in a browser on the same network. If it fell back to AP mode, join the \"CODLAI Server\" network and open http://192.168.4.1/demopage. To use the server features, \"#define USE_SERVER\" must be written BEFORE including the library (it is below)."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "mod (STA/AP), IP ve sayfa adresi",
+            "en": "mode (STA/AP), IP and page address"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Telegram_Notification_Example",
+      "path": "2-Advanced/ROLEBOT_Telegram_Notification_Example/ROLEBOT_Telegram_Notification_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "telegram"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "TELEGRAM BİLDİRİMİ",
+        "en": "TELEGRAM NOTIFICATION"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanır; B1 butonuna basınca telefonunuza Telegram mesajı gönderir (örneğin \"kapı zili çaldı\" uyarısı). Seri Port'tan kendi mesajınızı da gönderebilirsiniz. BOT_TOKEN: Telegram'da @BotFather ile bir bot oluşturun, verdiği anahtarı yazın. CHAT_ID: @userinfobot'a yazarak kendi sohbet numaranızı öğrenin. Botunuza bir kez \"merhaba\" yazmayı unutmayın (yoksa bot size mesaj atamaz).",
+        "en": "The ROLEBOT connects to WiFi; pressing the B1 button sends a Telegram message to your phone (e.g. a \"doorbell rang\" alert). You can also send your own message from the Serial port. BOT_TOKEN: create a bot with @BotFather in Telegram and paste the token it gives you. CHAT_ID: message @userinfobot to learn your chat id. Remember to send \"hello\" to your bot once (otherwise the bot cannot message you)."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "gonder",
+          "en": "send",
+          "description": {
+            "tr": "\"Butona basıldı\" deneme mesajı gönder",
+            "en": "send a \"Button pressed\" test message"
+          }
+        },
+        {
+          "tr": "mesaj Kapı açıldı",
+          "en": "msg Door opened",
+          "description": {
+            "tr": "kendi mesajınızı gönder",
+            "en": "send your own message"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "WiFi durumu ve gönderilen mesaj sayısı",
+            "en": "WiFi state and number of messages sent"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English; mesaj metni de)",
+            "en": "switch language (Turkish <-> English; message text too)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Weather_Info_Example",
+      "path": "2-Advanced/ROLEBOT_Weather_Info_Example/ROLEBOT_Weather_Info_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "weather"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "HAVA DURUMU",
+        "en": "WEATHER"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanır ve seçilen şehrin hava durumunu internetten alıp dakikada bir Seri Port'a yazar. API anahtarı boş bırakılırsa ücretsiz wttr.in servisi kullanılır; isterseniz OpenWeatherMap anahtarınızı API_KEY'e yazın.",
+        "en": "The ROLEBOT connects to WiFi, gets the weather of the chosen city from the internet and prints it to the Serial port once a minute. If the API key is left empty, the free wttr.in service is used; optionally put your OpenWeatherMap key in API_KEY."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "hava",
+          "en": "weather",
+          "description": {
+            "tr": "hava durumunu şimdi al",
+            "en": "get the weather now"
+          }
+        },
+        {
+          "tr": "sehir Ankara",
+          "en": "city Ankara",
+          "description": {
+            "tr": "şehri değiştir",
+            "en": "change the city"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_WiFi_Simple_Status_Example",
+      "path": "2-Advanced/ROLEBOT_WiFi_Simple_Status_Example/ROLEBOT_WiFi_Simple_Status_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "wifi"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "KABLOSUZ İLETİŞİME İLK ADIM - En basit WiFi örneği",
+        "en": "FIRST STEP INTO WIRELESS COMMUNICATION - the simplest WiFi example"
+      },
+      "summary": {
+        "tr": "ROLEBOT'u evinizin WiFi ağına bağlar, bağlantı başarılı olursa aldığı IP adresini Seri Port'ta gösterir ve LED'i yakar. Bağlantı koparsa LED söner ve Seri Port'a yazılır. ROLEBOT'ta LCD ekran olmadığı için tüm bilgiler Seri Port (USB) üzerinden verilir. Sunucu YOK, web sayfası YOK - sadece \"ağa katılmak\" ne demek onu öğretir.",
+        "en": "Connects the ROLEBOT to your home WiFi network and, once connected, shows the IP address on Serial and turns the LED on. If the connection drops, the LED goes off and it is printed. ROLEBOT has no LCD screen, so all feedback is given through the Serial (USB) monitor. NO server, NO web page - just teaches what \"joining a network\" means."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "ağ adı, IP, sinyal gücü, MAC adresi",
+            "en": "network name, IP, signal strength, MAC address"
+          }
+        },
+        {
+          "tr": "baglan",
+          "en": "connect",
+          "description": {
+            "tr": "yeniden bağlanmayı dene (en fazla ~15 sn)",
+            "en": "try to reconnect (up to ~15 s)"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_WiFi_Web_Control_Example",
+      "path": "2-Advanced/ROLEBOT_WiFi_Web_Control_Example/ROLEBOT_WiFi_Web_Control_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "server"
+      ],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "WEB'DEN RÖLE KONTROLÜ",
+        "en": "RELAY CONTROL FROM THE WEB"
+      },
+      "summary": {
+        "tr": "Telefon/tarayıcıdan (ROLEBOT'un kendi WiFi ağına bağlanarak) iki röleyi ve LED'i açıp kapatabildiğiniz bir uzaktan kontrol paneli. `serverOnRequest()` fonksiyonu kullanılır - `serverCreateLocalPage()`'in aksine, bir adrese (örneğin \"/relay1-on\") istek geldiğinde GERÇEKTEN kod çalıştırmanıza (bir röleyi tetiklemenize) izin verir. Aynı röleleri Seri Port'tan da kontrol edebilirsiniz; web sayfası durumu her saniye yeniler.",
+        "en": "A remote-control panel you open from your phone/browser (by joining ROLEBOT's own WiFi network) to turn two relays and the LED on/off. Uses the `serverOnRequest()` function - unlike `serverCreateLocalPage()`, it lets code actually RUN (trigger a relay) when a URL (e.g. \"/relay1-on\") is requested. You can control the same relays from the Serial port too; the web page refreshes the state every second."
+      },
+      "wiring": "Yükleri rölelerin COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / Wire the loads to the relays' COM + NO terminals. Only an adult should work with mains voltage (220V).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "role1 ac",
+          "en": "relay1 on",
+          "description": {
+            "tr": "Röle 1'i aç",
+            "en": "turn Relay 1 on"
+          }
+        },
+        {
+          "tr": "role2 kapat",
+          "en": "relay2 off",
+          "description": {
+            "tr": "Röle 2'yi kapat",
+            "en": "turn Relay 2 off"
+          }
+        },
+        {
+          "tr": "degistir 1",
+          "en": "toggle 1",
+          "description": {
+            "tr": "Röle 1'i tersine çevir",
+            "en": "invert Relay 1"
+          }
+        },
+        {
+          "tr": "hepsi kapat",
+          "en": "all off",
+          "description": {
+            "tr": "iki röleyi de kapat",
+            "en": "turn both relays off"
+          }
+        },
+        {
+          "tr": "led ac",
+          "en": "led on",
+          "description": {
+            "tr": "LED'i aç (\"led kapat\" / \"led off\")",
+            "en": "turn the LED on (\"led off\" / \"led kapat\")"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "röle/LED durumu ve panel adresi",
+            "en": "relay/LED state and the panel address"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English; web durum yazısı da)",
+            "en": "switch language (Turkish <-> English; web status text too)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Wikipedia_Search_Example",
+      "path": "2-Advanced/ROLEBOT_Wikipedia_Search_Example/ROLEBOT_Wikipedia_Search_Example.ino",
+      "category": "Advanced",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "wikipedia"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "VİKİPEDİ ARAMA",
+        "en": "WIKIPEDIA SEARCH"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanır, Vikipedi'de bir konuyu arar ve kısa özetini Seri Port'a yazar. Açılışta \"Robot\" konusunu arar; sonra Seri Port'tan istediğiniz konuyu arayabilirsiniz. Arama dili, seçili dile göre Türkçe (tr) ya da İngilizce (en) Vikipedi'dir.",
+        "en": "The ROLEBOT connects to WiFi, looks up a topic on Wikipedia and prints a short summary to the Serial port. At startup it looks up \"Robot\"; after that you can search any topic from the Serial port. The search uses the Turkish (tr) or English (en) Wikipedia, following the selected language."
+      },
+      "wiring": "Kablo gerekmez. / No wiring needed.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "ara Mustafa Kemal",
+          "en": "search Albert Einstein",
+          "description": {
+            "tr": "konuyu ara",
+            "en": "look up the topic"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English;",
+            "en": "switch language (Turkish <-> English;"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Double_Click_Two_Relay_Control_Example",
+      "path": "3-Projects/ROLEBOT_Double_Click_Two_Relay_Control_Example/ROLEBOT_Double_Click_Two_Relay_Control_Example.ino",
+      "category": "Projects",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "GERÇEK PROJE - Tek Butonla İki Röle Kontrolü",
+        "en": "A REAL PROJECT - Controlling Two Relays with One Button"
+      },
+      "summary": {
+        "tr": "ROLEBOT'ta tek bir buton var ama iki röle var - bu örnek klasik bir gömülü sistem tekniğinin (\"tek tık / çift tık\" ayrımı) nasıl yapıldığını gösterir: B1'e TEK basıp bırakırsanız Röle 1 açılır/kapanır. HIZLI bir şekilde İKİ kez basarsanız (400 ms içinde) Röle 2 açılır/kapanır. Mavi LED, rölelerden biri açıkken yanar.",
+        "en": "ROLEBOT only has one button but two relays - this example shows a classic embedded-systems technique (telling a \"single click\" from a \"double click\"): A SINGLE press of B1 toggles Relay 1. A FAST double press (within 400 ms) toggles Relay 2. The blue LED is on while any relay is on."
+      },
+      "wiring": "Yükleri rölelerin COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / Wire the loads to the relays' COM + NO terminals. Only an adult should work with mains voltage (220V). ROLEBOT'ta ekran YOK; bilgiler Seri Port'tan verilir. / ROLEBOT has NO screen; feedback is given through the Serial port.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "role1 ac",
+          "en": "relay1 on",
+          "description": {
+            "tr": "Röle 1'i aç",
+            "en": "turn Relay 1 on"
+          }
+        },
+        {
+          "tr": "role2 kapat",
+          "en": "relay2 off",
+          "description": {
+            "tr": "Röle 2'yi kapat",
+            "en": "turn Relay 2 off"
+          }
+        },
+        {
+          "tr": "degistir 1",
+          "en": "toggle 1",
+          "description": {
+            "tr": "Röle 1'i tersine çevir (tek tık gibi)",
+            "en": "invert Relay 1 (like a single click)"
+          }
+        },
+        {
+          "tr": "degistir 2",
+          "en": "toggle 2",
+          "description": {
+            "tr": "Röle 2'yi tersine çevir (çift tık gibi)",
+            "en": "invert Relay 2 (like a double click)"
+          }
+        },
+        {
+          "tr": "hepsi kapat",
+          "en": "all off",
+          "description": {
+            "tr": "iki röleyi de kapat",
+            "en": "turn both relays off"
+          }
+        },
+        {
+          "tr": "sure 400",
+          "en": "window 400",
+          "description": {
+            "tr": "çift tık süresi (150-1000 ms)",
+            "en": "double-click window (150-1000 ms)"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "röle durumları",
+            "en": "relay states"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_EEPROM_Relay_Memory_Example",
+      "path": "3-Projects/ROLEBOT_EEPROM_Relay_Memory_Example/ROLEBOT_EEPROM_Relay_Memory_Example.ino",
+      "category": "Projects",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "GERÇEK PROJE - Elektrik Kesintisinde Hafızalı Priz",
+        "en": "A REAL PROJECT - A Plug That Remembers Its State After a Power Cut"
+      },
+      "summary": {
+        "tr": "Normal bir akıllı priz elektrik kesilip geldiğinde hep KAPALI açılır. Bu örnekte Röle 1'in en son durumu (açık/kapalı) her değiştiğinde EEPROM'a (kalıcı hafıza) yazılır; kart yeniden başlatıldığında (örneğin elektrik kesintisinden sonra) rölenin son durumunu hatırlayıp GERİ YÜKLER. (Bu yüzden bu örnekte Röle 1 bilerek son durumuyla başlar.) B1 butonuna basınca Röle 1 açılır/kapanır ve durum hafızaya kaydedilir. Mavi LED, Röle 1 açıkken yanar.",
+        "en": "A normal smart plug always comes back OFF after power returns. In this example, Relay 1's last state (on/off) is written to EEPROM (persistent memory) every time it changes; when the board restarts (e.g. after a power outage) it RESTORES the relay's last state. (That is why Relay 1 deliberately starts in its last state in this example.) Press B1 to toggle Relay 1; the state is saved to memory. The blue LED is on while Relay 1 is on."
+      },
+      "wiring": "Yükü Röle 1'in COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / Wire the load to Relay 1's COM + NO terminals. Only an adult should work with mains voltage (220V). Not / Note: EEPROM'un yazma ömrü sınırlıdır; sadece durum DEĞİŞİNCE yazıyoruz. / EEPROM has limited write cycles; we only write when the state CHANGES.",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "ac   (role1 ac)",
+          "en": "on  (relay1 on)",
+          "description": {
+            "tr": "Röle 1'i aç ve kaydet",
+            "en": "turn Relay 1 on and save"
+          }
+        },
+        {
+          "tr": "degistir",
+          "en": "toggle",
+          "description": {
+            "tr": "Röle 1'i tersine çevir ve kaydet",
+            "en": "invert Relay 1 and save"
+          }
+        },
+        {
+          "tr": "oku",
+          "en": "read",
+          "description": {
+            "tr": "hafızadaki değeri göster",
+            "en": "show the value in memory"
+          }
+        },
+        {
+          "tr": "unut",
+          "en": "forget",
+          "description": {
+            "tr": "hafızayı sil (sonraki açılış KAPALI)",
+            "en": "erase the memory (next boot = OFF)"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "röle durumu",
+            "en": "relay state"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_NTP_Scheduled_Relay_Example",
+      "path": "3-Projects/ROLEBOT_NTP_Scheduled_Relay_Example/ROLEBOT_NTP_Scheduled_Relay_Example.ino",
+      "category": "Projects",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [
+        "wifi"
+      ],
+      "needsCredentials": true,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "GERÇEK PROJE - Saat Ayarlı Akıllı Röle (Haftalık Program)",
+        "en": "A REAL PROJECT - Time-Scheduled Smart Relay (Weekly Program)"
+      },
+      "summary": {
+        "tr": "ROLEBOT WiFi'ye bağlanır, internetten (NTP) doğru saati alır ve rölelerini bir PROGRAM TABLOSUNA göre kendiliğinden açar/kapatır: örneğin Röle 1 (salon lambası) her akşam 19:00-23:30, Röle 2 (bahçe pompası) Pazartesi, Çarşamba ve Cuma sabahları 07:00-07:15. Saat bilinmiyorsa güvenlik için program röleleri KAPALI tutar. ELLE müdahale: B1 kısa basış = Röle 1, uzun basış (1 sn+) = Röle 2 tersine döner. Elle ayar, programdaki bir sonraki değişime kadar (ya da \"program\" komutuna kadar) geçerlidir. Mavi LED: saat varsa yavaş, yoksa hızlı yanıp söner.",
+        "en": "The ROLEBOT connects to WiFi, gets the correct time from the internet (NTP) and switches its relays on/off BY ITSELF following a SCHEDULE TABLE: e.g. Relay 1 (living room lamp) every evening 19:00-23:30, Relay 2 (garden pump) Monday, Wednesday and Friday mornings 07:00-07:15. If the time is unknown, the schedule keeps the relays OFF for safety. MANUAL override: B1 short press = Relay 1, long press (1 s+) = Relay 2 is inverted. The override lasts until the next change in the schedule (or the \"schedule\" command). Blue LED: slow blink with a valid time, fast blink without."
+      },
+      "wiring": "Yükleri rölelerin COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. Aşağıya WiFi adınızı ve şifrenizi yazın. / Wire the loads to the relays' COM + NO terminals. Only an adult should work with mains voltage (220V). Enter your WiFi name and password below. ROLEBOT'ta LCD ekran YOK; tüm bilgiler Seri Port (USB) üzerinden verilir. / ROLEBOT has NO LCD screen; all feedback is given through Serial (USB).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "role1 ac",
+          "en": "relay1 on",
+          "description": {
+            "tr": "Röle 1'i elle aç (programı geçersiz kılar)",
+            "en": "turn Relay 1 on by hand (overrides the schedule)"
+          }
+        },
+        {
+          "tr": "role2 kapat",
+          "en": "relay2 off",
+          "description": {
+            "tr": "Röle 2'yi elle kapat",
+            "en": "turn Relay 2 off by hand"
+          }
+        },
+        {
+          "tr": "degistir 1",
+          "en": "toggle 1",
+          "description": {
+            "tr": "Röle 1'i elle tersine çevir",
+            "en": "invert Relay 1 by hand"
+          }
+        },
+        {
+          "tr": "hepsi kapat",
+          "en": "all off",
+          "description": {
+            "tr": "iki röleyi de elle kapat",
+            "en": "turn both relays off by hand"
+          }
+        },
+        {
+          "tr": "program",
+          "en": "schedule",
+          "description": {
+            "tr": "elle ayarları bırak, programa dön",
+            "en": "drop the overrides, follow the schedule"
+          }
+        },
+        {
+          "tr": "tablo",
+          "en": "table",
+          "description": {
+            "tr": "program tablosunu göster",
+            "en": "show the schedule table"
+          }
+        },
+        {
+          "tr": "durum",
+          "en": "status",
+          "description": {
+            "tr": "saat ve röle durumları",
+            "en": "time and relay states"
+          }
+        },
+        {
+          "tr": "guncelle",
+          "en": "update",
+          "description": {
+            "tr": "saati internetten hemen yeniden al",
+            "en": "fetch the time from the internet now"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROLEBOT_Smart_Plug_Auto_Off_Timer_Example",
+      "path": "3-Projects/ROLEBOT_Smart_Plug_Auto_Off_Timer_Example/ROLEBOT_Smart_Plug_Auto_Off_Timer_Example.ino",
+      "category": "Projects",
+      "board": "ROLEBOT",
+      "chip": "ESP8266",
+      "robot": null,
+      "modules": [],
+      "needsCredentials": false,
+      "needsPeerMac": false,
+      "autoManual": false,
+      "title": {
+        "tr": "GERÇEK PROJE - Zaman Ayarlı Akıllı Priz",
+        "en": "A REAL PROJECT - Smart Plug with Auto-Off Timer"
+      },
+      "summary": {
+        "tr": "Butona bir kere basınca Röle 1 (örneğin bir lamba/şarj cihazı) açılır ve geri sayım başlar; süre dolunca cihaz KENDİLİĞİNDEN kapanır - unutkanlık için idealdir (örneğin saç düzleştirici ya da şarj cihazı için). Geri sayım sırasında tekrar butona basarsanız cihazı erken kapatabilirsiniz. LED, röle açıkken yanıp söner (ne kadar hızlı yanıp sönüyorsa kalan süre o kadar azalıyor demektir).",
+        "en": "Press the button once and Relay 1 (e.g. a lamp/charger) turns on and a countdown starts; when time runs out, the device turns off AUTOMATICALLY - ideal for forgetful moments (e.g. a hair straightener or a charger). Press the button again during the countdown to turn it off early. The LED blinks while the relay is on (the faster it blinks, the less time is left)."
+      },
+      "wiring": "Cihazı Röle 1'in COM + NO uçlarına bağlayın. Şebeke gerilimi (220V) ile SADECE bir yetişkin çalışsın. / Wire the device to Relay 1's COM + NO terminals. Only an adult should work with mains voltage (220V).",
+      "serialBaud": 115200,
+      "commands": [
+        {
+          "tr": "yardim",
+          "en": "help",
+          "description": {
+            "tr": "komut listesi",
+            "en": "command list"
+          }
+        },
+        {
+          "tr": "baslat (ac)",
+          "en": "start (on)",
+          "description": {
+            "tr": "cihazı aç, geri sayımı başlat",
+            "en": "turn the device on, start the countdown"
+          }
+        },
+        {
+          "tr": "durdur (kapat)",
+          "en": "stop (off)",
+          "description": {
+            "tr": "cihazı hemen kapat",
+            "en": "turn the device off now"
+          }
+        },
+        {
+          "tr": "sure 60",
+          "en": "time 60",
+          "description": {
+            "tr": "açık kalma süresi (saniye, 5-3600)",
+            "en": "on-time (seconds, 5-3600)"
+          }
+        },
+        {
+          "tr": "kalan",
+          "en": "left",
+          "description": {
+            "tr": "kalan süre",
+            "en": "remaining time"
+          }
+        },
+        {
+          "tr": "dil",
+          "en": "lang",
+          "description": {
+            "tr": "dili değiştir (Türkçe <-> English)",
+            "en": "switch language (Turkish <-> English)"
+          }
+        }
+      ]
+    }
+  ]
+}

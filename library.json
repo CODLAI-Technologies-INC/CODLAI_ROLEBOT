@@ -1,6 +1,6 @@
 {
   "name": "CODLAI_ROLEBOT",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "description": "Library for ROLEBOT, an ESP8266-based programmable device. Visit www.codlai.com for more information.",
   "keywords": [
     "robotics",
@@ -46,7 +46,7 @@
     "espressif32"
   ],
   "examples": [
-    "examples/main/ROLEBOT_basic_example"
+    "examples/*/*/*.ino"
   ],
   "homepage": "https://github.com/CODLAI-Technologies-INC/CODLAI_ROLEBOT",
   "dependencies": {

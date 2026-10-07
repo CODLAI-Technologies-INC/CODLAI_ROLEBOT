@@ -11,8 +11,8 @@
     *   **EN:** Performs startup with LED.
     *   **TR:** LED ile açılış yapar.
 *   `bool button1Read()`
-    *   **EN:** Reads the button.
-    *   **TR:** Butonu okur.
+    *   **EN:** Reads the button (B1, GPIO0). Returns the raw level: `true` = RELEASED, `false` = PRESSED - use `!rolebot.button1Read()` for "pressed" (kept this way for backward compatibility).
+    *   **TR:** Butonu (B1, GPIO0) okur. Ham seviyeyi döndürür: `true` = BIRAKILMIŞ, `false` = BASILI - "basılı mı" için `!rolebot.button1Read()` kullanın (geriye uyumluluk için böyle bırakıldı).
 *   `void ledWrite(bool status)`
     *   **EN:** Controls the onboard LED.
     *   **TR:** Kart üzerindeki LED'i kontrol eder.
@@ -35,8 +35,8 @@
     *   **TR:** editor.codlai.com'un ürettiği programlar `eepromBegin(1024)` çağırır ve şu alanları kullanır: `0-255` hafıza bloğu sayıları (64 x 4 bayt), `256-895` hafıza bloğu metinleri (10 x 64 bayt), `896-1019` editör rezervi (ESP-NOW eşleşme kaydı `eepromWriteRecord(960, ...)` ile 960-975), `1020-1023` editör işareti `0xC0D1A001`. Editör bloklarıyla birlikte kullanılan elle yazılmış kod 1024'ün üstünde kalmalı (`eepromBegin`'i daha büyük boyutla çağırın).
 *   **EEPROM / Kalıcı Hafıza**:
     *   `void eepromWriteInt(int address, int value)` / `int eepromReadInt(int address)`
-        *   **EN:** Legacy 16-bit (2-byte) integer read/write.
-        *   **TR:** Eski tip 16-bit (2 bayt) tam sayı okuma/yazma.
+        *   **EN:** Legacy 16-bit (2-byte) integer read/write, range -32768..32767 (negative values now read back correctly).
+        *   **TR:** Eski tip 16-bit (2 bayt) tam sayı okuma/yazma, aralık -32768..32767 (negatif sayılar artık doğru okunur).
     *   `bool eepromBegin(size_t size = 512)` / `bool eepromCommit()` / `void eepromEnd()`
         *   **EN:** Initialize / commit / end EEPROM.
         *   **TR:** EEPROM başlat / commit / kapat.
@@ -50,8 +50,8 @@
         *   **EN:** Float read/write.
         *   **TR:** Float okuma/yazma.
     *   `bool eepromWriteString(int address, const String &value, uint16_t maxLen = 128)` / `String eepromReadString(int address, uint16_t maxLen = 128)`
-        *   **EN:** Stores as `[uint16 length][bytes...]`.
-        *   **TR:** `[uint16 uzunluk][baytlar...]` formatında saklar.
+        *   **EN:** Stores as `[uint16 length][bytes...]`. Reading a never-written (erased) area returns `""`.
+        *   **TR:** `[uint16 uzunluk][baytlar...]` formatında saklar. Hiç yazılmamış (silinmiş) alan okununca `""` döner.
     *   `bool eepromWriteBytes(int address, const uint8_t *data, size_t len)` / `bool eepromReadBytes(int address, uint8_t *data, size_t len)`
         *   **EN:** Raw bytes.
         *   **TR:** Ham bayt verisi.
@@ -68,11 +68,24 @@
         *   **EN:** CRC-protected record read (validates magic/len/crc).
         *   **TR:** CRC korumalı record okuma (magic/len/crc kontrolü).
 *   **WiFi**: `wifiStartAndConnect`, `wifiConnectionControl`, `wifiGetIPAddress`, `wifiGetMACAddress`.
+    *   **EN:** `wifiStartAndConnect` prints the password masked (`****`). `wifiConnectionControl()` returns the state and prints to Serial only when it changes (safe to call in `loop()`).
+    *   **TR:** `wifiStartAndConnect` şifreyi gizli (`****`) yazar. `wifiConnectionControl()` durumu döndürür, seri porta sadece durum değişince yazar (`loop()` içinde güvenle çağrılabilir).
+*   `String urlEncode(const String &text)`
+    *   **EN:** UTF-8 percent-encoding for web addresses (space, `&`, `?`, Turkish letters -> `%XX`). `sendTelegram`, `getWeather` and `getWikipedia` already do this - pass them plain text.
+    *   **TR:** Web adresleri için UTF-8 yüzde kodlama (boşluk, `&`, `?`, Türkçe harfler -> `%XX`). `sendTelegram`, `getWeather` ve `getWikipedia` bunu zaten kendileri yapar - onlara düz metin verin.
 *   **OTA (Over-The-Air)**: `otaBegin`, `otaHandle` (call after WiFi, keep `otaHandle()` in `loop()`).
+    *   **EN:** Default port is `8266` (ESP8266 standard, used by Arduino IDE / PlatformIO espota); it used to be `3232` (the ESP32 port).
+    *   **TR:** Varsayılan port `8266` (ESP8266 standardı, Arduino IDE / PlatformIO espota bunu kullanır); eskiden `3232` (ESP32 portu) idi.
 *   **NTP Time / Saat Senkron**: `ntpBegin` (recommended), `ntpSync` (advanced), `ntpIsTimeValid`, `ntpGetEpoch`, `ntpGetDateTimeString`. Blok dostu / block-friendly: `ntpUpdate`, `ntpGetHour/Minute/Second/Day/Month/Year/Weekday` (-1 = saat yok / no time; 1=Pazartesi/Monday), `ntpGetTimeString`, `ntpGetDateString`, `ntpTimeIs(saat, dakika)` (o dakika boyunca / during that minute), `ntpTimeReached(saat, dakika)` (bir kez / once), `ntpTimeIsBetween(s1, d1, s2, d2)` (gece yarisini asabilir / may cross midnight) - ayrinti icin CODLAI_IOTBOT COMMANDS_README / details in CODLAI_IOTBOT COMMANDS_README.
 *   **ESP-NOW**: `initESPNow`, `setWiFiChannel`, `sendESPNow`, `registerOnRecv`, `startListening`.
-*   **Server / Sunucu**: `serverStart`, `serverCreateLocalPage`, `serverHandleDNS`, `serverContinue`.
+    *   **EN:** `CodlaiESPNowMessage.deviceType` map: `1` ARMBOT command, `2` CARBOT command, `3` CARBOT telemetry, `4` ARMBOT signal, `10` IOTBOT LDR broadcast, `11` IOTBOT temperature broadcast, `20` simple text, `21` simple number, `22-29` reserved for editor.codlai.com private/pairing blocks, `30-39` reserved for the CODLAI Robots Otonom project, `40-49` library example board IDs (`40` IOTBOT, `41` MINIBOT, `42` ROLEBOT) used by the Broadcast_Simple / Pair / SmartLED_Remote examples.
+    *   **TR:** `CodlaiESPNowMessage.deviceType` haritası: `1` ARMBOT komutu, `2` CARBOT komutu, `3` CARBOT telemetrisi, `4` ARMBOT sinyali, `10` IOTBOT LDR yayını, `11` IOTBOT sıcaklık yayını, `20` basit metin, `21` basit sayı, `22-29` editor.codlai.com özel/eşleşmeli bloklarına ayrılmış, `30-39` CODLAI Robotları Otonom projesine ayrılmış, `40-49` kütüphane örnek kartı kimlikleri (`40` IOTBOT, `41` MINIBOT, `42` ROLEBOT; Broadcast_Simple / Pair / SmartLED_Remote örnekleri).
+*   **Server / Sunucu**: `serverStart`, `serverCreateLocalPage`, `serverOnRequest`, `serverHandleDNS`, `serverContinue`.
+    *   **EN:** `serverStart("STA", ssid, pass)` falls back to its own AP named `CODLAI-ROLEBOT` if it can't join (password = the given one, or `12345678` if shorter than 8 characters); `serverStart("AP", ...)` also replaces a 1-7 character password with `12345678` (softAP rejects it). Name, password and address are printed to Serial. Calling `serverStart` twice no longer registers the pages twice. `serverCreateLocalPage("/")` (or `""`) becomes the home page and replaces the default "CODLAI Server is Running!" page; `"demopage"` and `"/demopage"` are the same. `serverContinue()` keeps DNS redirection running in both AP and AP+STA modes.
+    *   **TR:** `serverStart("STA", ssid, sifre)` ağa bağlanamazsa `CODLAI-ROLEBOT` adlı kendi ağını (AP) kurar (şifre = verilen şifre, 8 karakterden kısaysa `12345678`); `serverStart("AP", ...)` de 1-7 karakterlik şifreyi `12345678` yapar (softAP onu reddeder). Ağ adı, şifre ve adres seri porta yazılır. `serverStart` iki kez çağrılınca sayfalar artık iki kez eklenmez. `serverCreateLocalPage("/")` (veya `""`) ana sayfa olur ve varsayılan "CODLAI Server is Running!" sayfasının yerini alır; `"demopage"` ile `"/demopage"` aynıdır. `serverContinue()` DNS yönlendirmesini hem AP hem AP+STA modunda sürdürür.
 *   **Cloud / Bulut**: `fbServerSetandStartWithUser` (Firebase), `sendTelegram`, `sendEmail`, `getWeather`, `getWikipedia`.
+    *   **EN:** `sendTelegram`, `getWeather` (city) and `getWikipedia` (title; spaces become `_`) encode their text themselves with full UTF-8 percent-encoding - pass plain text such as `"İzmir"` or `"Sıcaklık %45 & nem"`; do not pre-encode it. `getWeather` with an OpenWeatherMap key now uses `https://` (the old `http://` URL always failed with the TLS client).
+    *   **TR:** `sendTelegram`, `getWeather` (şehir) ve `getWikipedia` (başlık; boşluklar `_` olur) metni kendileri tam UTF-8 yüzde kodlamasıyla kodlar - `"İzmir"` ya da `"Sıcaklık %45 & nem"` gibi düz metin verin, önceden kodlamayın. `getWeather` OpenWeatherMap anahtarıyla artık `https://` kullanır (eski `http://` adresi TLS istemcisiyle hep başarısız oluyordu).
     *   `bool triggerIFTTTEvent(const String &eventName, const String &webhookKey, const String &jsonPayload = "{}")`
         *   **EN:** Triggers an IFTTT Webhook event with optional JSON payload data and returns `true` when the request succeeds (HTTP 200).
         *   **TR:** Opsiyonel JSON verisiyle IFTTT Webhook olayını tetikler ve istek başarılı olduğunda (HTTP 200) `true` döndürür.

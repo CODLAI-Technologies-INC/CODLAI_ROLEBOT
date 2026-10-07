@@ -82,7 +82,7 @@ extern "C" {
 #ifndef CODLAI_ESPNOW_MESSAGE_DEFINED
 #define CODLAI_ESPNOW_MESSAGE_DEFINED
 typedef struct {
-  uint8_t deviceType; // 1=Armbot komutu, 2=Carbot komutu, 3=Carbot telemetrisi (axis3=mesafe cm, -1=bilinmiyor), 4=Armbot sinyali, 10=IOTBOT LDR yayini, 11=IOTBOT sicaklik yayini, 20=basit metin mesaji, 21=basit sayi mesaji, 22-29=REZERVE: editor.codlai.com ozel/eslesmeli mesajlasma bloklari (22 ozel metin, 23 ozel sayi, 24 eslesme teklifi, 25 eslesme kabulu; axis1=grup, axis2/axis3=hedef MAC, her zaman yayinla gonderilir, suzgec alicida), 30-39=REZERVE: CODLAI Robotlari Otonom projesi (30 eslesme teklifi, 31 eslesme kabul, 32 mod, 33 durum)
+  uint8_t deviceType; // 1=Armbot komutu, 2=Carbot komutu, 3=Carbot telemetrisi (axis3=mesafe cm, -1=bilinmiyor), 4=Armbot sinyali, 10=IOTBOT LDR yayini, 11=IOTBOT sicaklik yayini, 20=basit metin mesaji, 21=basit sayi mesaji, 22-29=REZERVE: editor.codlai.com ozel/eslesmeli mesajlasma bloklari (22 ozel metin, 23 ozel sayi, 24 eslesme teklifi, 25 eslesme kabulu; axis1=grup, axis2/axis3=hedef MAC, her zaman yayinla gonderilir, suzgec alicida), 30-39=REZERVE: CODLAI Robotlari Otonom projesi (30 eslesme teklifi, 31 eslesme kabul, 32 mod, 33 durum), 40-49=kutuphane ornek karti kimlikleri / library example board IDs (40 IOTBOT, 41 MINIBOT, 42 ROLEBOT; Broadcast_Simple / Pair / SmartLED_Remote ornekleri / examples)
   int axis1;
   int axis2;
   int axis3;
@@ -118,6 +118,12 @@ public:
   void serialWrite(bool value);
 
   /*********************************** BUTTONS ***********************************/
+  // DIKKAT: Ham pin seviyesini dondurur (dahili pull-up) -> true = BIRAKILMIS,
+  // false = BASILI. Basili mi diye bakmak icin: !rolebot.button1Read()
+  // (Geriye uyumluluk icin boyle birakildi; ornekler degeri tersine cevirir.)
+  // / NOTE: returns the raw pin level (internal pull-up) -> true = RELEASED,
+  // false = PRESSED. To check "is pressed": !rolebot.button1Read()
+  // (Kept this way for backward compatibility; the examples invert the value.)
   bool button1Read();
 
   /*********************************** LED ***********************************/
@@ -138,6 +144,7 @@ public:
   uint8_t eepromReadByte(int address, uint8_t defaultValue = 0);
 
   // NOTE: eepromWriteInt/eepromReadInt store 16-bit (2 bytes) for backward compatibility.
+  // Aralik / range: -32768 ... 32767 (negatif sayilar da dogru okunur / negatives read back correctly)
   void eepromWriteInt(int address, int value);
   int eepromReadInt(int address);
 
@@ -149,6 +156,7 @@ public:
   float eepromReadFloat(int address, float defaultValue = 0.0f);
 
   // Stores: [uint16 length][bytes...]
+  // Hic yazilmamis (silinmis, 0xFF) alan "" dondurur / never-written (erased, 0xFF) area returns ""
   bool eepromWriteString(int address, const String &value, uint16_t maxLen = 128);
   String eepromReadString(int address, uint16_t maxLen = 128);
 
@@ -165,18 +173,30 @@ public:
   /*********************************** WiFi  ***********************************
    */
 #if defined(USE_WIFI)
-  void wifiStartAndConnect(const char *ssid, const char *pass);
-  bool wifiConnectionControl();
+  void wifiStartAndConnect(const char *ssid, const char *pass); // Sifre seri porta yazilmaz (****) / password is not printed (****)
+  bool wifiConnectionControl(); // Durumu dondurur; seri porta SADECE durum degisince yazar / returns the state; prints ONLY when it changes
   String wifiGetMACAddress();
   String wifiGetIPAddress();
 #endif
 
+  // Metni adres (URL) icinde guvenle kullanilacak hale getirir (UTF-8 yuzde
+  // kodlama): harf/rakam ve - _ . ~ ayni kalir, diger her bayt (bosluk, &, ?,
+  // Turkce harfler...) %XX olur. sendTelegram/getWeather/getWikipedia bunu
+  // KENDILERI yapar - onlara ham metin verin.
+  // / Makes text safe inside a web address (URL) (UTF-8 percent-encoding):
+  // letters/digits and - _ . ~ stay, every other byte (space, &, ?, Turkish
+  // letters...) becomes %XX. sendTelegram/getWeather/getWikipedia do this
+  // THEMSELVES - pass them plain text.
+  String urlEncode(const String &text);
+
   /*********************************** OTA (Over-The-Air) ***********************************
-   * TR: WiFi baglantisindan SONRA cagirilmalidir.
-   * EN: Must be called AFTER WiFi connection is established.
+   * TR: WiFi baglantisindan SONRA cagirilmalidir. Varsayilan port 8266 (ESP8266
+   * standardi; Arduino IDE / espota bu portu bekler).
+   * EN: Must be called AFTER WiFi connection is established. Default port is 8266
+   * (the ESP8266 standard; Arduino IDE / espota expect this port).
    */
 #if defined(USE_OTA)
-  void otaBegin(const char *hostname = "CODLAI-ROLEBOT", const char *password = "1234", uint16_t port = 3232);
+  void otaBegin(const char *hostname = "CODLAI-ROLEBOT", const char *password = "1234", uint16_t port = 8266);
   void otaHandle();
 #endif
 
@@ -213,7 +233,19 @@ public:
   /*********************************** Server  ***********************************
    */
 #if defined(USE_SERVER)
+  // mode "STA": ssid/password ile aga baglanir; 30 sn'de baglanamazsa kendi agini
+  // kurar: ad "CODLAI-ROLEBOT", sifre = verilen sifre (8 karakterden kisaysa
+  // "12345678"). mode "AP": ssid/password ile kendi agini kurar (bos ad ->
+  // "CODLAI-ROLEBOT"; 1-7 karakterlik sifre -> "12345678", bos sifre = sifresiz ag).
+  // / mode "STA": joins ssid/password; if it can't within 30 s it starts its own
+  // network: name "CODLAI-ROLEBOT", password = the given one ("12345678" if it is
+  // shorter than 8). mode "AP": starts its own network ssid/password (empty name ->
+  // "CODLAI-ROLEBOT"; 1-7 char password -> "12345678", empty password = open network).
   void serverStart(const char *mode, const char *ssid, const char *password);
+  // url: "demopage" ya da "/demopage" (ikisi ayni); "/" veya "" ana sayfa olur ve
+  // serverStart'in varsayilan ana sayfasinin yerine gecer.
+  // / url: "demopage" or "/demopage" (same thing); "/" or "" becomes the home page
+  // and replaces serverStart's default home page.
   void serverCreateLocalPage(const char *url, const char *WEBPageScript, const char *WEBPageCSS, const char *WEBPageHTML, size_t bufferSize = 4096);
   // serverCreateLocalPage SADECE sabit/statik bir HTML sayfasi render eder;
   // butona basildiginda gercekten bir rolyeyi tetiklemek icin bu fonksiyon
@@ -340,6 +372,17 @@ private:
   DNSServer dnsServer;                              // DNS sunucusu tanımlanıyor / Define DNS Server
   AsyncWebServer serverCODLAI{80};                  // Web server objesi
   AsyncWebSocket *serverCODLAIWebSocket;            // Pointer olarak tanımla
+  AsyncCallbackWebHandler *_serverRootHandler = nullptr; // serverStart'in varsayilan "/" sayfasi / serverStart's default "/" page
+  bool _serverStarted = false;    // handler'lar + begin() sadece BIR kez / handlers + begin() only ONCE
+  bool _serverUserRoot = false;   // kullanici "/" kaydetti mi / did the user register "/"
+  bool _serverDnsStarted = false; // AP DNS yonlendirmesi calisiyor mu / is AP DNS redirection running
+  String _serverPath(const char *url);
+  void _serverClaimRoot(const String &path);
+  void _serverStartAP(const char *ssid, const char *password);
+#endif
+
+#if defined(USE_WIFI)
+  int8_t _wifiLastState = -1; // wifiConnectionControl: son yazilan durum (-1 = hic) / last printed state (-1 = never)
 #endif
 
 #if defined(USE_FIREBASE)
@@ -587,7 +630,10 @@ inline int ROLEBOT::eepromReadInt(int address) // EEPROM'dan int türünde veri 
 
   uint8_t hi = EEPROM.read(address);     // İlk baytı oku
   uint8_t lo = EEPROM.read(address + 1); // İkinci baytı oku
-  return word(hi, lo);                   // Yüksek ve düşük baytları birleştirerek int değeri oluştur
+  // word() isaretsizdir: -5 yazilip 65531 okunuyordu. int16_t'ye cevirmek isareti
+  // geri getirir. / word() is unsigned: writing -5 read back 65531. Casting to
+  // int16_t restores the sign.
+  return (int16_t)word(hi, lo);
 }
 
 inline bool ROLEBOT::eepromWriteInt32(int address, int32_t value)
@@ -780,6 +826,15 @@ inline String ROLEBOT::eepromReadString(int address, uint16_t maxLen)
 
   uint16_t len = 0;
   EEPROM.get(address, len);
+
+  // Hic yazilmamis (silinmis) flash 0xFF okunur -> uzunluk 0xFFFF. Eskiden bu,
+  // maxLen kadar 0xFF karakterli anlamsiz bir metin donduruyordu.
+  // / Never-written (erased) flash reads 0xFF -> length 0xFFFF. This used to
+  // return maxLen bytes of 0xFF garbage.
+  if (len == 0xFFFF)
+  {
+    return String("");
+  }
 
   if (len > maxLen)
   {
@@ -1172,7 +1227,13 @@ inline bool ROLEBOT::ntpTimeIsBetween(int startHour, int startMinute, int endHou
 
 inline void ROLEBOT::wifiStartAndConnect(const char *ssid, const char *pass)
 {
-  Serial.printf("[WiFi]: Connection Starting!\r\n[WiFi]: SSID: %s\r\n[WiFi]: Pass: %s\r\n", ssid, pass);
+  // Sifre seri porta ACIK yazilmaz (sinifta ekran paylasiminda gorunmesin);
+  // sadece uzunlugu kadar '*' basilir. / The password is NOT printed in clear
+  // (so it doesn't show on a shared classroom screen); only one '*' per character.
+  String masked;
+  for (size_t i = 0; pass && pass[i]; i++)
+    masked += '*';
+  Serial.printf("[WiFi]: Connection Starting!\r\n[WiFi]: SSID: %s\r\n[WiFi]: Pass: %s\r\n", ssid, masked.c_str());
 
   WiFi.begin(ssid, pass);
   int count = 0;
@@ -1193,16 +1254,17 @@ inline void ROLEBOT::wifiStartAndConnect(const char *ssid, const char *pass)
 
 inline bool ROLEBOT::wifiConnectionControl()
 {
-  if (WiFi.status() == WL_CONNECTED)
+  // loop() icinde sik cagrilinca her seferinde satir basip seri portu
+  // bogmasin diye SADECE durum degisince (ve ilk cagrida) yazar.
+  // / Prints ONLY when the state changes (and on the first call) so that
+  // frequent calls from loop() don't flood the serial port.
+  const bool connected = (WiFi.status() == WL_CONNECTED);
+  if (_wifiLastState != (int8_t)connected)
   {
-    Serial.println("[WiFi]: Connection OK!");
-    return true;
+    _wifiLastState = (int8_t)connected;
+    Serial.println(connected ? "[WiFi]: Connection OK!" : "[WiFi]: Connection ERROR!");
   }
-  else
-  {
-    Serial.println("[WiFi]: Connection ERROR!");
-    return false;
-  }
+  return connected;
 }
 
 inline String ROLEBOT::wifiGetMACAddress()
@@ -1215,6 +1277,30 @@ inline String ROLEBOT::wifiGetIPAddress()
   return WiFi.localIP().toString();
 }
 #endif
+
+/*********************************** URL encode ***********************************/
+inline String ROLEBOT::urlEncode(const String &text)
+{
+  static const char hex[] = "0123456789ABCDEF";
+  String out;
+  out.reserve(text.length() * 3);
+  for (size_t i = 0; i < text.length(); i++)
+  {
+    const uint8_t c = (uint8_t)text[i];
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
+        c == '-' || c == '_' || c == '.' || c == '~')
+    {
+      out += (char)c;
+    }
+    else
+    {
+      out += '%';
+      out += hex[c >> 4];
+      out += hex[c & 0x0F];
+    }
+  }
+  return out;
+}
 
 /*********************************** OTA (Over-The-Air) ***********************************/
 #if defined(USE_OTA)
@@ -1276,21 +1362,94 @@ inline void ROLEBOT::otaHandle()
 /*********************************** Server ***********************************/
 #if defined(USE_SERVER)
 
+// url'i "/..." bicimine getirir: "demopage" -> "/demopage", "/" ve "" -> "/".
+// Eskiden her zaman basa "/" eklendigi icin "/" adresi "//" oluyordu.
+// / Normalises url to "/...": "demopage" -> "/demopage", "/" and "" -> "/".
+// A "/" was always prepended before, so "/" became "//".
+inline String ROLEBOT::_serverPath(const char *url)
+{
+  String path = url ? String(url) : String("");
+  path.trim();
+  if (!path.startsWith("/"))
+  {
+    path = "/" + path;
+  }
+  return path;
+}
+
+// Kullanici "/" sayfasini kaydedince serverStart'in varsayilan "CODLAI Server is
+// Running!" sayfasini kaldirir: once kaydedilen handler kazandigi icin kullanicinin
+// ana sayfasi hic gorunmuyordu. / When the user registers "/", remove
+// serverStart's default "CODLAI Server is Running!" page: the handler registered
+// first wins, so the user's home page never showed up.
+inline void ROLEBOT::_serverClaimRoot(const String &path)
+{
+  if (path != "/")
+  {
+    return;
+  }
+  _serverUserRoot = true;
+  if (_serverRootHandler)
+  {
+    serverCODLAI.removeHandler(_serverRootHandler); // Kutuphane nesneyi siler / the library deletes the object
+    _serverRootHandler = nullptr;
+  }
+}
+
+// Kendi WiFi agini (AP) kurar ve ad / sifre / adresi seri porta yazar.
+// / Starts its own WiFi network (AP) and prints name / password / address.
+inline void ROLEBOT::_serverStartAP(const char *ssid, const char *password)
+{
+  const char *apSsid = (ssid && ssid[0]) ? ssid : "CODLAI-ROLEBOT";
+  const char *apPass = password ? password : "";
+  // softAP() 1-7 karakterlik sifreyi REDDEDER ve ag hic acilmaz; bos sifre ise
+  // sifresiz (acik) ag demektir. / softAP() REJECTS a 1-7 character password and
+  // no network appears at all; an empty password means an open network.
+  if (strlen(apPass) > 0 && strlen(apPass) < 8)
+  {
+    Serial.println("[AP Mode]: Sifre 8 karakterden kisa, \"12345678\" kullaniliyor / Password shorter than 8 characters, using \"12345678\"");
+    apPass = "12345678";
+  }
+
+  if (!WiFi.softAP(apSsid, apPass))
+  {
+    Serial.println("[AP Mode]: Erisim noktasi ACILAMADI! / Access point could NOT be started!");
+  }
+  WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+
+  if (_serverDnsStarted)
+  {
+    dnsServer.stop(); // Ikinci cagrida eskisini kapat / close the old one on a second call
+  }
+  dnsServer.start(53, "*", apIP);
+  _serverDnsStarted = true;
+
+  Serial.println("\n[AP Mode]: Erisim noktasi acildi / Access point started");
+  Serial.printf("[AP Mode]: Ag adi / Network name: \"%s\"\n", apSsid);
+  Serial.printf("[AP Mode]: Sifre / Password: \"%s\"\n", apPass[0] ? apPass : "(sifresiz / open)");
+  Serial.printf("[AP Mode]: Adres / Address: http://%s\n", WiFi.softAPIP().toString().c_str());
+}
+
 inline void ROLEBOT::serverStart(const char *mode, const char *ssid, const char *password)
 {
-  if (strcmp(mode, "STA") == 0)
+  if (mode && strcmp(mode, "STA") == 0)
   {
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid, password);
-
-    Serial.printf("\n[STA Mode]: Connecting to WiFi: %s\n", ssid);
-
-    int retries = 30;
-    while (WiFi.status() != WL_CONNECTED && retries > 0)
+    // Zaten bu aga bagliysa (ornegin wifiStartAndConnect ile) yeniden baglanma.
+    // / Already joined to this network (e.g. via wifiStartAndConnect): don't reconnect.
+    if (!(WiFi.status() == WL_CONNECTED && ssid && WiFi.SSID() == ssid))
     {
-      delay(1000);
-      Serial.print(".");
-      retries--;
+      WiFi.mode(WIFI_STA);
+      WiFi.begin(ssid, password);
+
+      Serial.printf("\n[STA Mode]: Connecting to WiFi: %s\n", ssid);
+
+      int retries = 30;
+      while (WiFi.status() != WL_CONNECTED && retries > 0)
+      {
+        delay(1000);
+        Serial.print(".");
+        retries--;
+      }
     }
 
     if (WiFi.status() == WL_CONNECTED)
@@ -1300,28 +1459,44 @@ inline void ROLEBOT::serverStart(const char *mode, const char *ssid, const char 
     }
     else
     {
-      Serial.println("\n[STA Mode]: Connection Failed! Switching to AP Mode...");
-      serverStart("AP", ssid, password);
-      return;
+      // Eskiden yedek AP modemin adi ve sifresiyle kuruluyordu: ayni adli sahte
+      // bir ag cikiyor, modem sifresi 8 karakterden kisaysa ag hic acilmiyordu.
+      // Artik sabit "CODLAI-ROLEBOT" adi kullanilir; STA kapatilir ki surekli yeniden
+      // baglanma denemeleri AP'nin kanalini bozmasin.
+      // / The fallback AP used to reuse the router's name and password: a fake
+      // network with the same name appeared, and with a router password shorter
+      // than 8 characters no network came up at all. Now the fixed name
+      // "CODLAI-ROLEBOT" is used; STA is switched off so endless reconnect attempts
+      // don't disturb the AP's channel.
+      Serial.println("\n[STA Mode]: Baglanilamadi! Kendi agini (AP) kuruyor... / Connection Failed! Switching to AP Mode...");
+      WiFi.mode(WIFI_AP);
+      _serverStartAP("CODLAI-ROLEBOT", password);
     }
   }
-  else if (strcmp(mode, "AP") == 0)
+  else if (mode && strcmp(mode, "AP") == 0)
   {
-    WiFi.softAP(ssid, password);
-    WiFi.softAPConfig(IPAddress(192, 168, 4, 1), IPAddress(192, 168, 4, 1), IPAddress(255, 255, 255, 0));
-    dnsServer.start(53, "*", IPAddress(192, 168, 4, 1));
-
-    Serial.printf("\n[AP Mode]: Access Point Started!\n");
-    Serial.printf("[AP Mode]: SSID: \"%s\"\n", ssid);
-    Serial.printf("[AP Mode]: Password: \"%s\"\n", password);
-    Serial.printf("[AP Mode]: AP IP Address: http://%s\n", WiFi.softAPIP().toString().c_str());
+    _serverStartAP(ssid, password);
   }
 
-  // 📌 Sayfaları tanımla
-  serverCODLAI.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-                  {
-      Serial.println("[Local Server]: Root URL Accessed!");
-      request->send(200, "text/plain", "CODLAI Server is Running!"); });
+  // Sayfalar, WebSocket ve begin() sadece ILK cagrida: serverStart ikinci kez
+  // (ornegin STA basarisiz -> "AP") cagrilinca ayni handler'lar iki kez
+  // ekleniyordu. / Pages, WebSocket and begin() only on the FIRST call: calling
+  // serverStart again (e.g. STA failed -> "AP") used to add the same handlers twice.
+  if (_serverStarted)
+  {
+    return;
+  }
+  _serverStarted = true;
+
+  // 📌 Varsayilan ana sayfa (kullanici "/" kaydederse kaldirilir)
+  // / Default home page (removed when the user registers "/")
+  if (!_serverUserRoot)
+  {
+    _serverRootHandler = &serverCODLAI.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+                                          {
+        Serial.println("[Local Server]: Root URL Accessed!");
+        request->send(200, "text/plain", "CODLAI Server is Running!"); });
+  }
 
   // 📌 404 Hatası
   serverCODLAI.onNotFound([](AsyncWebServerRequest *request)
@@ -1348,8 +1523,11 @@ inline void ROLEBOT::serverStart(const char *mode, const char *ssid, const char 
 
 inline void ROLEBOT::serverCreateLocalPage(const char *url, const char *WEBPageScript, const char *WEBPageCSS, const char *WEBPageHTML, size_t bufferSize)
 {
+  const String path = _serverPath(url);
+  _serverClaimRoot(path);
+
   // 📌 Sayfa içeriğini oluştur
-  serverCODLAI.on(("/" + String(url)).c_str(), HTTP_GET, [WEBPageScript, WEBPageCSS, WEBPageHTML, bufferSize](AsyncWebServerRequest *request)
+  serverCODLAI.on(path.c_str(), HTTP_GET, [WEBPageScript, WEBPageCSS, WEBPageHTML, bufferSize](AsyncWebServerRequest *request)
                   {
                     // Buffer boyutu kullanıcının belirttiği veya varsayılan değerle tanımlanır
                     char *buffer = new char[bufferSize];
@@ -1366,17 +1544,19 @@ inline void ROLEBOT::serverCreateLocalPage(const char *url, const char *WEBPageS
 
   if (WiFi.status() == WL_CONNECTED)
   {
-    Serial.printf("[Local Server]: Page created at: http://%s/%s\n", WiFi.localIP().toString().c_str(), url);
+    Serial.printf("[Local Server]: Page created at: http://%s%s\n", WiFi.localIP().toString().c_str(), path.c_str());
   }
   else
   {
-    Serial.printf("[Local Server]: Page created at: http://%s/%s\n", apIP.toString().c_str(), url);
+    Serial.printf("[Local Server]: Page created at: http://%s%s\n", apIP.toString().c_str(), path.c_str());
   }
 }
 
 inline void ROLEBOT::serverOnRequest(const char *url, std::function<String()> callback)
 {
-  serverCODLAI.on(url, HTTP_GET, [callback](AsyncWebServerRequest *request)
+  const String path = _serverPath(url); // "led/on" da "/led/on" da calisir / both "led/on" and "/led/on" work
+  _serverClaimRoot(path);
+  serverCODLAI.on(path.c_str(), HTTP_GET, [callback](AsyncWebServerRequest *request)
                   {
                     String response = callback(); // Donanim burada tetiklenir (role vb.)
                     request->send(200, "text/plain", response);
@@ -1390,7 +1570,10 @@ inline void ROLEBOT::serverHandleDNS()
 
 inline void ROLEBOT::serverContinue()
 {
-  if (WiFi.getMode() == WIFI_AP)
+  // AP_STA modunda da (AP + aga bagli) DNS yonlendirmesi calissin; eskiden
+  // sadece saf AP modunda calisiyordu. / Keep DNS redirection running in AP_STA
+  // mode too (AP + joined network); it used to run only in pure AP mode.
+  if (_serverDnsStarted && (WiFi.getMode() & WIFI_AP))
   {
     serverHandleDNS();
   }
@@ -1805,6 +1988,14 @@ inline String ROLEBOT::getWeather(String city, String apiKey)
   HTTPClient http;
   String url;
 
+  // Sehir adi adreste guvenli olsun diye burada kodlanir ("New York" ->
+  // "New%20York", "İzmir" -> "%C4%B0zmir"). Ham adi verin; onceden kodlarsaniz
+  // iki kez kodlanir. / The city name is encoded here so it is safe in the
+  // address ("New York" -> "New%20York", "İzmir" -> "%C4%B0zmir"). Pass the plain
+  // name; pre-encoding it would encode it twice.
+  city.trim();
+  const String cityEnc = urlEncode(city);
+
   if (apiKey == "" || apiKey == "YOUR_API_KEY") {
       Serial.println("[Weather]: Using wttr.in (Free Service)...");
       
@@ -1812,7 +2003,7 @@ inline String ROLEBOT::getWeather(String city, String apiKey)
       client.setHandshakeTimeout(20000); 
       #endif
 
-      url = "https://wttr.in/" + city + "?format=%t+%C";
+      url = "https://wttr.in/" + cityEnc + "?format=%t+%C";
       
       Serial.println("[Weather]: Requesting URL: " + url);
       
@@ -1841,7 +2032,11 @@ inline String ROLEBOT::getWeather(String city, String apiKey)
       }
   } 
   else {
-      url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&units=metric";
+      // https: istemci WiFiClientSecure (TLS); eski "http://" adresi 80 portunda
+      // TLS denedigi icin OpenWeatherMap istegi hep basarisiz oluyordu.
+      // / https: the client is WiFiClientSecure (TLS); the old "http://" address
+      // tried TLS on port 80, so the OpenWeatherMap request always failed.
+      url = "https://api.openweathermap.org/data/2.5/weather?q=" + cityEnc + "&appid=" + apiKey + "&units=metric";
 
       http.begin(client, url);
       int httpCode = http.GET();
@@ -1880,7 +2075,16 @@ inline String ROLEBOT::getWikipedia(String query, String lang)
 #endif
 
   HTTPClient http;
-  String url = "https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + query;
+  // Baslik burada adrese uygun hale getirilir: bosluk -> "_" (Vikipedi basliklari
+  // boyle), Turkce harfler ve isaretler -> %XX. Ham basligi verin ("Mustafa Kemal
+  // Atatürk"); onceden kodlarsaniz iki kez kodlanir. / The title is prepared for
+  // the address here: space -> "_" (how Wikipedia titles look), Turkish letters
+  // and symbols -> %XX. Pass the plain title; pre-encoding it would encode twice.
+  query.trim();
+  query.replace(" ", "_");
+  if (lang.length() == 0)
+    lang = "en";
+  String url = "https://" + lang + ".wikipedia.org/api/rest_v1/page/summary/" + urlEncode(query);
 
   Serial.println("[Wikipedia]: Requesting URL: " + url);
   
@@ -1934,17 +2138,22 @@ inline void ROLEBOT::sendTelegram(String token, String chatId, String message)
   client.setInsecure();
   HTTPClient http;
   
-  // URL Encode the message manually for basic characters or use a library if needed. 
-  // For simplicity, we replace spaces with %20.
-  message.replace(" ", "%20");
-  
-  String url = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chatId + "&text=" + message;
+  // Mesaj tam UTF-8 yuzde kodlamasiyla adrese eklenir; eskiden sadece bosluklar
+  // kodlaniyordu: "&", "#", "+" ve Turkce harfler mesaji bozuyor/kesiyordu. Ham
+  // metin verin (onceden kodlarsaniz mesajda "%20" gibi gorunur).
+  // / The message goes into the address with full UTF-8 percent-encoding; only
+  // spaces used to be encoded: "&", "#", "+" and Turkish letters broke/cut the
+  // message. Pass plain text (pre-encoding it would show up as "%20" etc.).
+  String url = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + urlEncode(chatId) + "&text=" + urlEncode(message);
   
   http.begin(client, url);
   int httpCode = http.GET();
   
-  if (httpCode > 0) {
+  if (httpCode == HTTP_CODE_OK) {
     Serial.println("Telegram Message Sent!");
+  } else if (httpCode > 0) {
+    // Sunucu cevap verdi ama reddetti (yanlis token / chat id...) / server answered but refused (wrong token / chat id...)
+    Serial.println("Telegram Error: HTTP " + String(httpCode) + " (token / chat id?)");
   } else {
     Serial.println("Error sending Telegram: " + http.errorToString(httpCode));
   }

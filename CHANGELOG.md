@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-07
+### Added
+- **Ornekler bastan yazildi (28 ornek):** hepsi ayni kurala uyuyor - en ustte `bool turkish` ile TR/EN secimi, calisirken seri porttan `dil`/`lang` ile degisim, iki dilli ve bloklamayan seri komutlar (`yardim`/`help`). Bir seyi suren ornekler OTOMATIK gosteriyle baslar, B1 (GPIO0) ile MANUEL moda gecilir.
+- Ornekler `Klasor/Klasor.ino` yapisina tasindi: Arduino IDE *Dosya > Ornekler* menusunde hepsi gorunur. `library.json` "examples" alani glob kullaniyor.
+- `examples/examples.json`: her ornegin yolu, karti, gereken moduller/ayarlar, TR/EN ozeti ve seri komutlari (editor.codlai.com "Kutuphane Ornekleri" ekrani icin; `scripts/generate_examples_json.py` ile uretilir).
+- ESP-NOW deviceType 40-49 kutuphane orneklerinin kart kimliklerine ayrildi (40 IOTBOT, 41 MINIBOT, 42 ROLEBOT); ornekler artik 10/20/30 tiplerini paylasmiyor.
+
+### Fixed
+- `serverStart`: STA baglanamazsa acilan yedek AP artik modemin adini/sifresini kopyalamiyor - sabit `CODLAI-ROLEBOT` adiyla acilir (sifre 8 karakterden kisaysa `12345678`). AP modunda 1-7 karakterlik sifre sessizce basarisiz oluyordu, artik `12345678` kullaniliyor. **Yedek agin adi degisti.**
+- `serverCreateLocalPage` / `serverOnRequest`: "/" adresi "//" oluyordu; kullanici "/" tanimlayinca varsayilan "CODLAI Server is Running!" sayfasi kaldiriliyor (kullanicinin ana sayfasi gorunmuyordu). "sayfa" ve "/sayfa" ayni. DNS yonlendirmesi AP+STA modunda da calisiyor.
+- `sendTelegram`: mesaj tam UTF-8 %XX kodlaniyor (eskiden sadece bosluk; Turkce harf, `&`, `#`, `+` mesaji bozuyordu). `getWeather` sehir adini, `getWikipedia` basligi kodluyor. Yeni `urlEncode()` yardimcisi. Sketch'te onceden kodlamayin.
+- `getWeather` (OpenWeatherMap): `http://` yerine `https://` (anahtar acik gitmiyor / istek basarisiz oluyordu).
+- `wifiStartAndConnect` WiFi sifresini seri porta acik yazmiyor; `wifiConnectionControl` seri portu sadece durum degisince yaziyor (loop icinde doldurmuyordu).
+- `eepromReadInt` isaretli 16 bit donuyor: -5 yazilip 65531 okunuyordu; hic yazilmamis alan 65535 yerine -1. `eepromReadString` hic yazilmamis alanda cop yerine "" donuyor.
+- **`otaBegin` varsayilan portu 3232 -> 8266** (ESP8266 standardi; Arduino IDE/espota bu portu bekler).
+
 ## [1.5.3] - 2026-09-29
 ### Fixed
 - CodlaiESPNowMessage aciklamasi: deviceType 22-29 editor.codlai.com ozel/eslesmeli mesajlasma bloklarina rezerve edildi (22 ozel metin, 23 ozel sayi, 24 eslesme teklifi, 25 eslesme kabulu; 26-29 bos). Kutuphane davranisi degismedi - `espNowAvailable()` hala yalniz 20/21'i gorur.
